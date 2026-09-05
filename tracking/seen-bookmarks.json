@@ -1,0 +1,13 @@
+{
+  "proposed": [],
+  "skipped": [
+    {
+      "id": "2091314509151715450",
+      "title": "openai/skills",
+      "url": "https://x.com/aiedge_/status/2091314509151715450",
+      "date": "2026-09-05",
+      "reason": "approval dismissed"
+    }
+  ],
+  "built": []
+}
