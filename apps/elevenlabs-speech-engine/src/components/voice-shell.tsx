@@ -280,7 +280,6 @@ export function VoiceShell({
               size="lg"
               className="min-w-48"
               disabled={!connected}
-              aria-pressed={turn === "listening" && listenMode === "hold"}
               onPointerDown={(event) => {
                 if (!connected || listenMode !== "hold") {
                   return
