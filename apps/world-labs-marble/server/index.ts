@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http"
-import { resolveAppConfig } from "../shared/env"
+import { resolveApiPort, resolveAppConfig } from "../shared/env"
 import {
   createFixtureJob,
   getFixtureOperation,
@@ -20,12 +20,21 @@ import {
 } from "../shared/prompt"
 import type { GenerateRequest } from "../shared/types"
 
-const PORT = Number(process.env.PORT ?? 3001)
+const PORT = resolveApiPort(process.env)
+const UI_PORT = 5173
+const localHosts = new Set(
+  ["127.0.0.1", "localhost"].map((host) => new URL(`http://${host}:${PORT}`).host),
+)
+const localOrigins = new Set(
+  [PORT, UI_PORT].flatMap((port) => [
+    new URL(`http://127.0.0.1:${port}`).origin,
+    new URL(`http://localhost:${port}`).origin,
+  ]),
+)
 
 function json(res: ServerResponse, status: number, body: unknown) {
   res.statusCode = status
   res.setHeader("Content-Type", "application/json")
-  res.setHeader("Access-Control-Allow-Origin", "*")
   res.end(JSON.stringify(body))
 }
 
@@ -39,13 +48,20 @@ async function readJson<T>(req: IncomingMessage): Promise<T> {
 }
 
 async function handleRequest(req: IncomingMessage, res: ServerResponse) {
+  // The Vite proxy changes Host to the API target and preserves Origin.
+  // Check before reading a body or dispatching any credit-spending request.
+  if (
+    !localHosts.has(req.headers.host ?? "") ||
+    (req.headers.origin !== undefined && !localOrigins.has(req.headers.origin))
+  ) {
+    json(res, 403, { error: "Only local playground requests are allowed." })
+    return
+  }
+
   const url = new URL(req.url ?? "/", `http://127.0.0.1:${PORT}`)
 
   if (req.method === "OPTIONS") {
     res.statusCode = 204
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type")
     res.end()
     return
   }
@@ -145,7 +161,6 @@ async function handleRequest(req: IncomingMessage, res: ServerResponse) {
       "Content-Type",
       upstream.headers.get("content-type") ?? "application/octet-stream",
     )
-    res.setHeader("Access-Control-Allow-Origin", "*")
     res.setHeader("Cache-Control", "private, max-age=60")
     const buffer = Buffer.from(await upstream.arrayBuffer())
     res.end(buffer)
@@ -174,7 +189,7 @@ const httpServer = createServer((req, res) => {
 
 const config = resolveAppConfig(process.env)
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, "127.0.0.1", () => {
   console.log(
     `Marble API on http://127.0.0.1:${PORT} (${config.mode}${config.hasApiKey ? ", live key present" : ""})`,
   )

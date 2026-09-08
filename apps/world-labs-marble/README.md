@@ -8,7 +8,9 @@ bun install
 bun run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The Bun API listens on port `3001`.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Both Vite and the Bun API bind to `127.0.0.1`; the API defaults to port `3001`. Vite exits if `5173` is occupied.
+
+This unauthenticated playground is local-only, including fixture mode. Do not expose it through `--host`, port forwarding, or a public reverse proxy. Remote access requires a separate authenticated design. API requests from foreign Host/Origin headers are rejected; the UI uses the same-origin Vite proxy, so wildcard CORS is unnecessary.
 
 The form prefills the OTB prompt plus Marble’s three-image set. Those slots are **real photographs** of the strip from Adam’s Nov 2020 Dropbox pack (`On The Boulevard 53.jpg` through `99.jpg`), not Atlas or Drive stand-ins:
 
@@ -39,7 +41,7 @@ Copy `.env.example` to `.env` in this folder.
 | --- | --- | --- |
 | `WLT_API_KEY` | Live only | Server-side World Labs key. Header name is `WLT-Api-Key`. Never expose it to the browser. |
 | `MARBLE_API_BASE` | No | Defaults to `https://api.worldlabs.ai/marble/v1`. |
-| `PORT` | No | Bun API port. Defaults to `3001`. |
+| `PORT` | No | API port and Vite proxy target. Missing/blank defaults to `3001`; otherwise use an integer from `1` to `65535`. Set it in this folder’s `.env` or the shell (shell takes precedence). |
 
 Get a key from the [World Labs Platform](https://platform.worldlabs.ai/). Live generation uses credits.
 
@@ -49,7 +51,7 @@ Get a key from the [World Labs Platform](https://platform.worldlabs.ai/). Live g
 | --- | --- |
 | `bun run dev` | Vite UI + Bun API together |
 | `bun run build` | Production client build |
-| `bun test` | Prompt, fixture-job, and env-mode tests |
+| `bun test` | Prompt, fixture-job, env-mode, loopback/security, and proxy-port tests |
 
 ## Stack
 

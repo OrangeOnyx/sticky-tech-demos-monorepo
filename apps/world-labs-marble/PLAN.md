@@ -38,3 +38,10 @@ Single-user playground that turns a text prompt and/or 1–3 images into a Marbl
 - Durable Cloudflare Pages preview
 - Auth / saved world library
 - Mesh export / game-engine integration
+
+## PR #2 safety follow-up (2026-09-08)
+- Goal: close the unauthenticated network exposure and honor the configured API port while preserving the single-user workflow.
+- Bind API and Vite to 127.0.0.1; remove launcher host overrides and wildcard CORS; reject foreign Host/Origin headers before dispatch.
+- Share API port parsing, including blank defaults and invalid-port rejection, between Bun and Vite.
+- Verify actual listeners, rejected browser requests, fixture generation, and non-default-port proxying with local-only tests.
+- Keep the existing Bun/Vite stack. Defer auth/remote hosting and unrelated review findings. No paid API requests.

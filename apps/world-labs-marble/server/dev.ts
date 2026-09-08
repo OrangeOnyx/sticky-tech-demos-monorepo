@@ -6,7 +6,7 @@ const api = Bun.spawn({
 })
 
 const ui = Bun.spawn({
-  cmd: ["bunx", "--bun", "vite", "--host"],
+  cmd: ["bunx", "--bun", "vite"],
   stdout: "inherit",
   stderr: "inherit",
   stdin: "inherit",

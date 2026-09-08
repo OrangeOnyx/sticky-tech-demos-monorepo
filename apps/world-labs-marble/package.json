@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun run server/dev.ts",
-    "dev:ui": "vite --host",
+    "dev:ui": "vite",
     "dev:api": "bun run server/index.ts",
     "build": "tsc -b && vite build",
     "lint": "oxlint",

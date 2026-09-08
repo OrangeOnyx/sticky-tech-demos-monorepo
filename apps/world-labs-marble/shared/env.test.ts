@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test"
-import { marbleApiBase, resolveAppConfig } from "./env"
+import { marbleApiBase, resolveApiPort, resolveAppConfig } from "./env"
 
 test("missing WLT_API_KEY is fixture mode", () => {
   const config = resolveAppConfig({})
@@ -20,4 +20,15 @@ test("Marble API base defaults and trims trailing slash", () => {
   expect(marbleApiBase({ MARBLE_API_BASE: "https://example.test/v1/" })).toBe(
     "https://example.test/v1",
   )
+})
+
+test("API port defaults for missing/blank values and honors overrides", () => {
+  for (const PORT of [undefined, "", "  "]) expect(resolveApiPort({ PORT })).toBe(3001)
+  expect(resolveApiPort({ PORT: " 4321 " })).toBe(4321)
+})
+
+test("invalid API ports fail instead of silently choosing an unusable port", () => {
+  for (const PORT of ["0", "-1", "65536", "1.5", "abc", "NaN", "Infinity", "0x1234"]) {
+    expect(() => resolveApiPort({ PORT })).toThrow("PORT must be an integer")
+  }
 })
