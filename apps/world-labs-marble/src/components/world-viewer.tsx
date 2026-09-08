@@ -16,7 +16,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { pickSplatUrl } from "@shared/world-assets"
-import { OTB_REFERENCE_ASSETS } from "@shared/otb"
+import { OTB_LIBRARY_ASSETS } from "@shared/otb"
 import { BoxIcon, ExternalLinkIcon } from "lucide-react"
 import { lazy, Suspense, useMemo } from "react"
 
@@ -63,12 +63,12 @@ export function WorldViewer({ world }: Props) {
               <BoxIcon className="size-8 text-muted-foreground" />
               <EmptyTitle>On The Boulevard</EmptyTitle>
               <EmptyDescription>
-                Floor plan, nadir aerial, and isometric look are prefilled.
-                Generate to poll a mock (or live) job, then orbit the strip.
+                Real Nov 2020 Dropbox stills are prefilled (strip, Politics,
+                Pink Paisley). Generate to poll a mock (or live) job, then orbit.
               </EmptyDescription>
             </EmptyHeader>
             <div className="grid w-full max-w-lg grid-cols-3 gap-2 px-4 pb-4">
-              {OTB_REFERENCE_ASSETS.map((asset) => (
+              {OTB_LIBRARY_ASSETS.map((asset) => (
                 <img
                   key={asset.url}
                   src={asset.url}
@@ -116,7 +116,7 @@ export function WorldViewer({ world }: Props) {
               {pano && pano !== thumbnail ? (
                 <img
                   src={proxyAssetUrl(pano)}
-                  alt="Floor plan"
+                  alt="Pink Paisley storefront"
                   className="h-12 w-20 rounded-md object-cover ring-1 ring-foreground/10"
                 />
               ) : null}

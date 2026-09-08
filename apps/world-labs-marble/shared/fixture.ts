@@ -1,7 +1,7 @@
 import { displayNameFromPrompt } from "./prompt"
 import {
   OTB_DISPLAY_NAME,
-  OTB_FLOORPLAN_URL,
+  OTB_PANO_URL,
   OTB_THUMBNAIL_URL,
 } from "./otb"
 import type { GenerateRequest, Operation, World } from "./types"
@@ -33,7 +33,7 @@ function captionFor(request: GenerateRequest): string {
     (request.text_prompt ?? "").toLowerCase().includes("on the boulevard")
 
   if (isOtb) {
-    return `Fixture stand-in for ${OTB_DISPLAY_NAME} at 101–149 Arnould Blvd, Lafayette LA. Layout follows the whole-center floor plan; parking follows the nadir aerial; massing follows the isometric look${imageCount ? ` (${imageCount} Drive-role reference image${imageCount === 1 ? "" : "s"})` : ""}. Peach stucco and clay-tile roofs stand in for the marketing style. Drag to look around the L-shaped strip. Live Marble would return Gaussian splats.`
+    return `Fixture stand-in for ${OTB_DISPLAY_NAME} at 101–149 Arnould Blvd, Lafayette LA, seeded from real Nov 2020 photographs (Dropbox stills 53–99)${imageCount ? ` (${imageCount} reference image${imageCount === 1 ? "" : "s"})` : ""}. Cream fascia, white columns, aqua walkway, brown shingles. Drag to look around the L-shaped strip. Live Marble would return Gaussian splats.`
   }
   if (imageCount) {
     return `Fixture sample of “${named}”, guided by ${imageCount} reference image${imageCount === 1 ? "" : "s"}. Drag to look around the stand-in scene.`
@@ -58,7 +58,7 @@ export function createFixtureJob(request: GenerateRequest): Operation {
     assets: {
       caption: captionFor(request),
       thumbnail_url: OTB_THUMBNAIL_URL,
-      imagery: { pano_url: OTB_FLOORPLAN_URL },
+      imagery: { pano_url: OTB_PANO_URL },
       splats: { spz_urls: null },
     },
     created_at: iso(created_at),
@@ -98,7 +98,7 @@ function stageFor(elapsed: number): {
       done: false,
       progress: {
         status: "IN_PROGRESS",
-        description: "Reading floor plan, nadir aerial, and look target",
+        description: "Reading Nov 2020 Dropbox stills of the strip",
         percent: 38,
       },
     }

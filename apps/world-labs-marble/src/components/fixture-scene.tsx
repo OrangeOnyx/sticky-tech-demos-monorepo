@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { OTB_FLOORPLAN_URL, OTB_THUMBNAIL_URL } from "@shared/otb"
+import { OTB_PANO_URL, OTB_THUMBNAIL_URL } from "@shared/otb"
 
 function box(
   scene: THREE.Scene,
@@ -74,7 +74,7 @@ export function FixtureScene() {
     })
 
     const walkwayMat = new THREE.MeshStandardMaterial({
-      color: 0x9ec5e8,
+      color: 0xa8d4d8,
       roughness: 0.7,
     })
     const walkH = new THREE.Mesh(new THREE.BoxGeometry(18.4, 0.06, 1.6), walkwayMat)
@@ -86,9 +86,9 @@ export function FixtureScene() {
     walkV.receiveShadow = true
     scene.add(walkV)
 
-    const stucco = 0xe8c4a0
-    const stuccoAlt = 0xf3d7b8
-    const clay = 0xc45c38
+    const stucco = 0xe8dcc8
+    const stuccoAlt = 0xf4eee4
+    const clay = 0x5c4033
     const glass = 0x7aa8c9
     const unitWidths = [2.4, 1.2, 1.1, 1.4, 1.2, 1.3, 1.1, 1.5, 1.2, 1.1, 1.3, 1.2, 1.4, 1.1, 1.6]
     let cursor = -8.6
@@ -100,7 +100,7 @@ export function FixtureScene() {
         roughness: 0.2,
         metalness: 0.15,
       })
-      box(scene, 0.12, 2.0, 0.12, cursor + 0.18, 1.15, -2.05, 0x1a1a1a)
+      box(scene, 0.18, 2.05, 0.18, cursor + 0.18, 1.15, -2.05, 0xf4f1ea)
       cursor += width
     }
 
@@ -114,7 +114,7 @@ export function FixtureScene() {
         roughness: 0.2,
         metalness: 0.15,
       })
-      box(scene, 0.12, 2.0, 0.12, 7.8, 1.15, zCursor + 0.3, 0x1a1a1a)
+      box(scene, 0.18, 2.05, 0.18, 7.8, 1.15, zCursor + 0.3, 0xf4f1ea)
       zCursor += depth
     }
 
@@ -135,7 +135,7 @@ export function FixtureScene() {
     plan.rotation.x = -Math.PI / 2
     plan.position.set(-1.2, 0.08, 1.6)
     scene.add(plan)
-    loader.load(OTB_FLOORPLAN_URL, (texture) => {
+    loader.load(OTB_PANO_URL, (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace
       plan.material.map = texture
       plan.material.needsUpdate = true
@@ -213,7 +213,7 @@ export function FixtureScene() {
     <div className="relative min-h-80">
       <div ref={hostRef} className="min-h-80 w-full" />
       <p className="pointer-events-none absolute bottom-3 left-3 right-3 text-xs text-zinc-100/90">
-        On The Boulevard · fixture strip · peach stucco / clay tile · drag to look
+        On The Boulevard · Nov 2020 photos · cream fascia / brown shingles · drag to look
       </p>
     </div>
   )

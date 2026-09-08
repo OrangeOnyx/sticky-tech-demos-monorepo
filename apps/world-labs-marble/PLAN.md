@@ -8,7 +8,7 @@ Single-user playground that turns a text prompt and/or 1–3 images into a Marbl
 - Bun server calls `https://api.worldlabs.ai/marble/v1` with `WLT-Api-Key`; the browser never sees the key
 - In-browser viewer: Spark splat viewer when an SPZ URL exists; otherwise Marble open-link + thumbnail/pano + status
 - Env: `WLT_API_KEY` for live Marble; **fixture/demo mode** when missing so `bun install && bun run dev` still runs the full flow with a mock job and sample world
-- Default generate payload: OTB prompt + three images (whole-center floor plan, nadir aerial, isometric look) mapped to Drive `00 OTB`
+- Default generate payload: OTB prompt + three real Nov 2020 Dropbox stills (`otb-dropbox-53.jpg` elevated strip, `otb-dropbox-70.jpg` Politics interior, `otb-dropbox-80.jpg` Pink Paisley interior). Library keeps 60/90/99 as well. Do not commit `DJI_0030.MOV`.
 - Self-contained under `apps/world-labs-marble/`
 
 ## Explicitly out of scope

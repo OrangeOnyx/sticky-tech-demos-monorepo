@@ -31,10 +31,10 @@ test("fixture job polls from queued to ready", () => {
     expect(done?.response?.source).toBe("fixture")
     expect(done?.response?.display_name).toBe("Greenhouse")
     expect(getFixtureWorld(done!.response!.id)?.assets?.thumbnail_url).toBe(
-      "/otb/OTB-sat-base.jpg",
+      "/otb/otb-dropbox-53.jpg",
     )
     expect(getFixtureWorld(done!.response!.id)?.assets?.imagery?.pano_url).toBe(
-      "/otb/floorplan-center.png",
+      "/otb/otb-dropbox-99.jpg",
     )
   } finally {
     Date.now = originalNow
@@ -55,6 +55,7 @@ test("OTB fixture caption names the shopping center", () => {
     expect(done?.response?.display_name).toBe("On The Boulevard")
     expect(done?.response?.assets?.caption).toContain("On The Boulevard")
     expect(done?.response?.assets?.caption).toContain("Arnould Blvd")
+    expect(done?.response?.assets?.caption).toContain("Nov 2020")
   } finally {
     Date.now = originalNow
   }

@@ -10,23 +10,23 @@ bun run dev
 
 Open [http://localhost:5173](http://localhost:5173). The Bun API listens on port `3001`.
 
-The form prefills the OTB prompt plus Marble’s three-image set. Those slots map to Drive `G:\My Drive\00 OTB`:
+The form prefills the OTB prompt plus Marble’s three-image set. Those slots are **real photographs** of the strip from Adam’s Nov 2020 Dropbox pack (`On The Boulevard 53.jpg` through `99.jpg`), not Atlas or Drive stand-ins:
 
-| Slot | Drive original | Bundled file |
+| Slot | Dropbox original | Bundled file |
 | --- | --- | --- |
-| 1. Whole-center floor plan | `Floor Plan Whole Center Final.png` | `public/otb/floorplan-center.png` |
-| 2. Georef nadir aerial | `georef-fit-nadir.png` | `public/otb/OTB-sat-base.jpg` |
-| 3. Target look / massing | `Belle Realty SOT Documents/Style I would like to get the center to look like for marketing.png` | `public/otb/spatial-isometric.png` |
+| 1. Elevated golden-hour strip | `On The Boulevard 53.jpg` | `public/otb/otb-dropbox-53.jpg` |
+| 2. Politics boutique interior | `On The Boulevard 70.jpg` | `public/otb/otb-dropbox-70.jpg` |
+| 3. Pink Paisley mezzanine interior | `On The Boulevard 80.jpg` | `public/otb/otb-dropbox-80.jpg` |
 
-Floor plan and nadir are the otb-command public copies of this property (`public/floorplan-center.png`, `public/OTB-sat-base.jpg`). Slot 3 is the Atlas spatial isometric of the same L-shaped strip (otb-command `public/manual/img/spatial.png`) so Marble still gets a 3D massing cue; the default **text prompt** carries the Mediterranean / Mission marketing look (peach stucco, clay tile, palms). Drop the live Drive PNGs over those paths (or swap them in the form) when they are on disk. `drone.png` from the same Drive folder is optional and not in the default 1–3 set.
+The viewer empty state also shows three more stills from the same pack (60, 90, 99) under `public/otb/otb-dropbox-*.jpg`. Marble accepts at most three images, so generate uses 53 + 70 + 80. The ~550MB drone clip `Drone Footage RAW/DJI_0030.MOV` lives in that Dropbox folder and is **not** in git.
 
-CAD layout lives in otb-command at `cad/Boulev_CLEAN.dxf`. Marble does not ingest DXF; this demo uses the floor-plan PNG instead.
+Secondary CAD/sat copies remain at `public/otb/floorplan-center.png` and `public/otb/OTB-sat-base.jpg` if you want to swap them in the form. They are not the default seeds.
 
 ## Fixture vs live
 
 | Mode | When | What happens |
 | --- | --- | --- |
-| **Fixture** | `WLT_API_KEY` is missing | UI still runs. Generate starts a local mock job, polls until ready (~4.5s), and opens an L-shaped OTB stand-in (nadir parking texture, floor-plan overlay, peach stucco / clay-tile massing). |
+| **Fixture** | `WLT_API_KEY` is missing | UI still runs. Generate starts a local mock job, polls until ready (~4.5s), and opens an L-shaped OTB stand-in textured from the Nov 2020 stills (cream fascia, white columns, aqua walkway, brown shingles). |
 | **Live** | `WLT_API_KEY` is set | The Bun server calls `https://api.worldlabs.ai/marble/v1` with the `WLT-Api-Key` header. The browser never sees the key. When an SPZ URL is returned, Spark renders it; otherwise you get thumbnail/pano plus an Open in Marble link. |
 
 `bun install && bun run dev` is enough to see the page. Fixture mode is the default in this repo because no key is committed.

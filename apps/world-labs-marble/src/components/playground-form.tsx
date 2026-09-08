@@ -104,7 +104,7 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
       <CardHeader>
         <CardTitle>Generate</CardTitle>
         <CardDescription>
-          Prefills On The Boulevard (floor plan, nadir, isometric look).
+          Prefills On The Boulevard from real Nov 2020 Dropbox stills.
           Generate, poll, then view.
         </CardDescription>
       </CardHeader>
@@ -147,9 +147,9 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                 placeholder={OTB_PROMPT}
               />
               <FieldDescription>
-                Default prompt is the Lafayette strip. The three seeds map to
-                Drive <code>00 OTB</code> (whole-center floor plan, georef
-                nadir, marketing look). Swap any of them before generate.
+                Default prompt is the Lafayette strip. The three seeds are real
+                Nov 2020 photos (elevated strip, Politics interior, Pink Paisley
+                interior). Swap any of them before generate.
               </FieldDescription>
             </Field>
             <Field>
