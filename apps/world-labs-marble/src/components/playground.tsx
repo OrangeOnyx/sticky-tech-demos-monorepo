@@ -117,9 +117,9 @@ export function Playground({ config }: Props) {
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
             Marble World API playground for the strip at 101–149 Arnould Blvd,
-            Lafayette LA. Prompt plus three real Nov 2020 photographs (Dropbox
-            stills of the strip, Politics, and Pink Paisley) go to generate,
-            then this page polls until a viewer is ready.
+            Lafayette LA. Generate defaults are three Nov 2020 Dropbox stills.
+            The library also shows live Drive floorplan / nadir / drone /
+            PostShot media (not Atlas stand-ins).
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -136,15 +136,15 @@ export function Playground({ config }: Props) {
           <AlertDescription>
             Running a local mock of On The Boulevard so generate → poll → view
             still works without a key. Add <code className="text-foreground">WLT_API_KEY</code>{" "}
-            for live Marble. Default media is real Nov 2020 photographs from
-            Adam’s Dropbox pack{" "}
-            <code className="text-foreground">On The Boulevard 53.jpg–99.jpg</code>
-            {" "}(drone MOV not in git).
+            for live Marble. Generate defaults are Dropbox stills{" "}
+            <code className="text-foreground">53 / 70 / 80</code>. The library
+            also includes live Drive + PostShot bytes (floorplan, nadir, drone,
+            PostShot stills — not Atlas stand-ins).
           </AlertDescription>
         </Alert>
       ) : (
         <Alert>
-          <AlertTitle>Live key is on the Bun server</AlertTitle>
+          <AlertTitle>Live key is on the local API</AlertTitle>
           <AlertDescription>
             The browser never sees <code className="text-foreground">WLT_API_KEY</code>.
             Generation uses credits on your World Labs account.

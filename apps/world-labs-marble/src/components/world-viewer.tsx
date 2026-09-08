@@ -16,7 +16,11 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { pickSplatUrl } from "@shared/world-assets"
-import { OTB_LIBRARY_ASSETS } from "@shared/otb"
+import {
+  OTB_AERIAL_PREVIEW,
+  OTB_DRIVE_FEATURED_ASSETS,
+  OTB_DROPBOX_ASSETS,
+} from "@shared/otb"
 import { BoxIcon, ExternalLinkIcon } from "lucide-react"
 import { lazy, Suspense, useMemo } from "react"
 
@@ -49,7 +53,7 @@ export function WorldViewer({ world }: Props) {
           <CardTitle>{world?.display_name || "Viewer"}</CardTitle>
           <CardDescription>
             {world?.assets?.caption ||
-              "Gaussian splat via Spark when an SPZ is present. Fixture mode stands in with an On The Boulevard strip."}
+              "Gaussian splat via Spark when an SPZ is present. Fixture mode stands in with an On The Boulevard strip. Empty state shows Dropbox stills plus live Drive / PostShot media."}
           </CardDescription>
         </div>
         {world ? (
@@ -63,19 +67,55 @@ export function WorldViewer({ world }: Props) {
               <BoxIcon className="size-8 text-muted-foreground" />
               <EmptyTitle>On The Boulevard</EmptyTitle>
               <EmptyDescription>
-                Real Nov 2020 Dropbox stills are prefilled (strip, Politics,
-                Pink Paisley). Generate to poll a mock (or live) job, then orbit.
+                Generate defaults are Dropbox 53 / 70 / 80. The library also
+                has live Drive floorplan, nadir, drone, and PostShot stills —
+                not Atlas stand-ins. The aerial clip is a reference only.
               </EmptyDescription>
             </EmptyHeader>
-            <div className="grid w-full max-w-lg grid-cols-3 gap-2 px-4 pb-4">
-              {OTB_LIBRARY_ASSETS.map((asset) => (
-                <img
-                  key={asset.url}
-                  src={asset.url}
-                  alt={asset.label}
-                  className="h-24 w-full rounded-md object-cover ring-1 ring-foreground/10"
-                />
-              ))}
+            <div className="flex w-full max-w-xl flex-col gap-3 px-4 pb-4">
+              <p className="text-xs font-medium text-muted-foreground">
+                Dropbox stills (Nov 2020)
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {OTB_DROPBOX_ASSETS.map((asset) => (
+                  <img
+                    key={asset.url}
+                    src={asset.url}
+                    alt={asset.label}
+                    className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
+                  />
+                ))}
+              </div>
+              <p className="text-xs font-medium text-muted-foreground">
+                Drive + PostShot
+              </p>
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+                {OTB_DRIVE_FEATURED_ASSETS.map((asset) => (
+                  <figure key={asset.url} className="space-y-1">
+                    <img
+                      src={asset.url}
+                      alt={asset.label}
+                      className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
+                    />
+                    <figcaption className="truncate text-[10px] leading-tight text-muted-foreground">
+                      {asset.label}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <p className="text-xs font-medium text-muted-foreground">
+                {OTB_AERIAL_PREVIEW.label}
+              </p>
+              <video
+                className="aspect-video w-full rounded-md bg-zinc-950 object-cover ring-1 ring-foreground/10"
+                controls
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                src={OTB_AERIAL_PREVIEW.url}
+                aria-label={OTB_AERIAL_PREVIEW.label}
+              />
             </div>
           </Empty>
         ) : (

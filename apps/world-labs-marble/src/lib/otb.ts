@@ -28,6 +28,12 @@ async function assetToUpload(asset: OtbReferenceAsset): Promise<SeededImage> {
   }
 }
 
+export async function loadOtbAsset(
+  asset: OtbReferenceAsset,
+): Promise<SeededImage> {
+  return assetToUpload(asset)
+}
+
 export async function loadOtbReferenceImages(): Promise<SeededImage[]> {
   return Promise.all(OTB_REFERENCE_ASSETS.map(assetToUpload))
 }

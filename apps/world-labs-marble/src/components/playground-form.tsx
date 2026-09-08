@@ -11,9 +11,16 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { loadOtbReferenceImages, type SeededImage } from "@/lib/otb"
+import { loadOtbAsset, loadOtbReferenceImages, type SeededImage } from "@/lib/otb"
 import type { ImageUpload } from "@/lib/types"
-import { OTB_DISPLAY_NAME, OTB_PROMPT } from "@shared/otb"
+import {
+  OTB_AERIAL_PREVIEW,
+  OTB_DISPLAY_NAME,
+  OTB_DRIVE_ASSETS,
+  OTB_DROPBOX_ASSETS,
+  OTB_PROMPT,
+  type OtbReferenceAsset,
+} from "@shared/otb"
 import { ImagePlusIcon, XIcon } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 
@@ -99,13 +106,31 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
     })
   }
 
+  async function selectLibraryAsset(asset: OtbReferenceAsset) {
+    if (images.some((image) => image.name === asset.name)) return
+    try {
+      const seeded = await loadOtbAsset(asset)
+      setImages((current) => {
+        if (current.length < 3) return [...current, seeded]
+        return [...current.slice(0, 2), seeded]
+      })
+    } catch (error) {
+      setSeedError(
+        error instanceof Error
+          ? error.message
+          : `Could not load ${asset.name}.`,
+      )
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Generate</CardTitle>
         <CardDescription>
           Prefills On The Boulevard from real Nov 2020 Dropbox stills.
-          Generate, poll, then view.
+          Drive floorplan, nadir, drone, and PostShot stills are in the library
+          — click to swap a generate slot (Marble max 3).
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -147,9 +172,9 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                 placeholder={OTB_PROMPT}
               />
               <FieldDescription>
-                Default prompt is the Lafayette strip. The three seeds are real
-                Nov 2020 photos (elevated strip, Politics interior, Pink Paisley
-                interior). Swap any of them before generate.
+                Default generate slots are Dropbox 53 / 70 / 80 (elevated strip,
+                Politics, Pink Paisley). Click a library still below to swap.
+                The aerial clip is a reference only — not a Marble input.
               </FieldDescription>
             </Field>
             <Field>
@@ -195,6 +220,38 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                   ))}
                 </div>
               ) : null}
+              <LibraryPicker
+                title="Dropbox stills"
+                assets={OTB_DROPBOX_ASSETS}
+                selectedNames={images.map((image) => image.name)}
+                disabled={busy}
+                onSelect={selectLibraryAsset}
+              />
+              <LibraryPicker
+                title="Drive + PostShot"
+                assets={OTB_DRIVE_ASSETS}
+                selectedNames={images.map((image) => image.name)}
+                disabled={busy}
+                onSelect={selectLibraryAsset}
+              />
+              <div className="space-y-1.5 pt-2">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Aerial preview (not a generate input)
+                </p>
+                <video
+                  className="aspect-video w-full rounded-lg bg-zinc-950 object-cover ring-1 ring-foreground/10"
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  src={OTB_AERIAL_PREVIEW.url}
+                  aria-label={OTB_AERIAL_PREVIEW.label}
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  {OTB_AERIAL_PREVIEW.label} · {OTB_AERIAL_PREVIEW.source}
+                </p>
+              </div>
             </Field>
             <Field orientation="horizontal">
               <Checkbox
@@ -222,5 +279,54 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
         </form>
       </CardContent>
     </Card>
+  )
+}
+
+function LibraryPicker({
+  title,
+  assets,
+  selectedNames,
+  disabled,
+  onSelect,
+}: {
+  title: string
+  assets: OtbReferenceAsset[]
+  selectedNames: string[]
+  disabled: boolean
+  onSelect: (asset: OtbReferenceAsset) => void
+}) {
+  return (
+    <div className="space-y-1.5 pt-2">
+      <p className="text-xs font-medium text-muted-foreground">{title}</p>
+      <div className="grid grid-cols-3 gap-1.5">
+        {assets.map((asset) => {
+          const selected = selectedNames.includes(asset.name)
+          return (
+            <button
+              key={asset.url}
+              type="button"
+              disabled={disabled || selected}
+              onClick={() => onSelect(asset)}
+              aria-pressed={selected}
+              aria-label={`${selected ? "Selected" : "Use"} ${asset.label}`}
+              className={`overflow-hidden rounded-md text-left ring-1 transition-shadow ${
+                selected
+                  ? "ring-foreground"
+                  : "ring-foreground/10 hover:ring-foreground/40"
+              } disabled:opacity-70`}
+            >
+              <img
+                src={asset.url}
+                alt=""
+                className="aspect-[4/3] w-full object-cover"
+              />
+              <p className="truncate px-1 py-0.5 text-[10px] leading-tight text-muted-foreground">
+                {asset.label}
+              </p>
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }
