@@ -16,6 +16,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { pickSplatUrl } from "@shared/world-assets"
+import { OTB_FLOORPLAN_URL, OTB_THUMBNAIL_URL } from "@shared/otb"
 import { BoxIcon, ExternalLinkIcon } from "lucide-react"
 import { lazy, Suspense, useMemo } from "react"
 
@@ -48,7 +49,7 @@ export function WorldViewer({ world }: Props) {
           <CardTitle>{world?.display_name || "Viewer"}</CardTitle>
           <CardDescription>
             {world?.assets?.caption ||
-              "Gaussian splat via Spark when an SPZ is present; fixture mode uses a local sample scene."}
+              "Gaussian splat via Spark when an SPZ is present. Fixture mode stands in with an On The Boulevard strip."}
           </CardDescription>
         </div>
         {world ? (
@@ -60,19 +61,31 @@ export function WorldViewer({ world }: Props) {
           <Empty className="min-h-80 border border-dashed">
             <EmptyHeader>
               <BoxIcon className="size-8 text-muted-foreground" />
-              <EmptyTitle>No world yet</EmptyTitle>
+              <EmptyTitle>On The Boulevard</EmptyTitle>
               <EmptyDescription>
-                Generate from a prompt or images. Status updates while the
-                operation runs, then the viewer loads here.
+                Floor plan and satellite are prefilled. Generate to poll a
+                mock (or live) job, then orbit the strip.
               </EmptyDescription>
             </EmptyHeader>
+            <div className="grid w-full max-w-md grid-cols-2 gap-2 px-4 pb-4">
+              <img
+                src={OTB_FLOORPLAN_URL}
+                alt="On The Boulevard center floor plan"
+                className="h-24 w-full rounded-md object-cover ring-1 ring-foreground/10"
+              />
+              <img
+                src={OTB_THUMBNAIL_URL}
+                alt="On The Boulevard satellite context"
+                className="h-24 w-full rounded-md object-cover ring-1 ring-foreground/10"
+              />
+            </div>
           </Empty>
         ) : (
           <>
             <div className="relative min-h-80 overflow-hidden rounded-xl bg-zinc-950 ring-1 ring-foreground/10">
               {world.source === "fixture" ? (
                 <Suspense fallback={<ViewerFallback />}>
-                  <FixtureScene seed={world.display_name || world.id} />
+                  <FixtureScene />
                 </Suspense>
               ) : splatUrl ? (
                 <Suspense fallback={<ViewerFallback />}>
@@ -98,8 +111,15 @@ export function WorldViewer({ world }: Props) {
               {thumbnail ? (
                 <img
                   src={proxyAssetUrl(thumbnail)}
-                  alt=""
-                  className="size-10 rounded-md object-cover ring-1 ring-foreground/10"
+                  alt="World thumbnail"
+                  className="h-12 w-20 rounded-md object-cover ring-1 ring-foreground/10"
+                />
+              ) : null}
+              {pano && pano !== thumbnail ? (
+                <img
+                  src={proxyAssetUrl(pano)}
+                  alt="Floor plan"
+                  className="h-12 w-20 rounded-md object-cover ring-1 ring-foreground/10"
                 />
               ) : null}
               <p className="font-mono text-xs text-muted-foreground">

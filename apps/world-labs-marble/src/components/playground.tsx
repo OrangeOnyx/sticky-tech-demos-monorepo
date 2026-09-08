@@ -110,14 +110,15 @@ export function Playground({ config }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-1">
           <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
-            World Labs
+            Belle Realty · OTB
           </p>
           <h1 className="font-heading text-3xl tracking-tight">
-            Marble playground
+            On The Boulevard
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            Text and/or 1–3 images go to the World API. This page polls the
-            operation, then opens a simple in-browser viewer.
+            Marble World API playground for the strip at 101–149 Arnould Blvd,
+            Lafayette LA. Prompt plus floor plan and satellite go to generate,
+            then this page polls until a viewer is ready.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -132,9 +133,10 @@ export function Playground({ config }: Props) {
         <Alert>
           <AlertTitle>No WLT_API_KEY</AlertTitle>
           <AlertDescription>
-            Running a local mock job and sample world so the full generate →
-            poll → view loop still works. Add a World Labs key to{" "}
-            <code className="text-foreground">.env</code> for live Marble.
+            Running a local mock of On The Boulevard so generate → poll → view
+            still works without a key. Add <code className="text-foreground">WLT_API_KEY</code>{" "}
+            for live Marble. Extra photos live on Drive{" "}
+            <code className="text-foreground">G:\My Drive\00 OTB</code>.
           </AlertDescription>
         </Alert>
       ) : (

@@ -1,4 +1,9 @@
 import { displayNameFromPrompt } from "./prompt"
+import {
+  OTB_DISPLAY_NAME,
+  OTB_FLOORPLAN_URL,
+  OTB_THUMBNAIL_URL,
+} from "./otb"
 import type { GenerateRequest, Operation, World } from "./types"
 
 const FIXTURE_DURATION_MS = 4500
@@ -18,15 +23,22 @@ function iso(ms: number): string {
 }
 
 function captionFor(request: GenerateRequest): string {
-  const text = request.text_prompt?.trim()
   const imageCount = request.images?.length ?? 0
-  if (text && imageCount) {
-    return `Fixture sample of “${text}”, guided by ${imageCount} reference image${imageCount === 1 ? "" : "s"}. Drag to look around the stand-in scene.`
+  const named = displayNameFromPrompt(
+    request.display_name,
+    request.text_prompt ?? "",
+  )
+  const isOtb =
+    named.toLowerCase().includes("boulevard") ||
+    (request.text_prompt ?? "").toLowerCase().includes("on the boulevard")
+
+  if (isOtb) {
+    return `Fixture stand-in for ${OTB_DISPLAY_NAME} at 101–149 Arnould Blvd, Lafayette LA. Layout follows the center floor plan; parking and context follow the satellite base${imageCount ? ` (${imageCount} reference image${imageCount === 1 ? "" : "s"})` : ""}. Drag to look around the L-shaped strip. Live Marble would return Gaussian splats.`
   }
-  if (text) {
-    return `Fixture sample of “${text}”. Live Marble would return Gaussian splats for this prompt; this local scene stands in so the generate → poll → view loop still runs.`
+  if (imageCount) {
+    return `Fixture sample of “${named}”, guided by ${imageCount} reference image${imageCount === 1 ? "" : "s"}. Drag to look around the stand-in scene.`
   }
-  return `Fixture sample from ${imageCount} uploaded image${imageCount === 1 ? "" : "s"}. Live Marble would reconstruct a splat world from the photos.`
+  return `Fixture sample of “${named}”. Live Marble would return Gaussian splats for this prompt; this local scene stands in so the generate → poll → view loop still runs.`
 }
 
 export function createFixtureJob(request: GenerateRequest): Operation {
@@ -45,8 +57,8 @@ export function createFixtureJob(request: GenerateRequest): Operation {
     world_marble_url: `/#world=${world_id}`,
     assets: {
       caption: captionFor(request),
-      thumbnail_url: "/fixture/thumbnail.svg",
-      imagery: { pano_url: "/fixture/pano.svg" },
+      thumbnail_url: OTB_THUMBNAIL_URL,
+      imagery: { pano_url: OTB_FLOORPLAN_URL },
       splats: { spz_urls: null },
     },
     created_at: iso(created_at),
@@ -76,7 +88,7 @@ function stageFor(elapsed: number): {
       done: false,
       progress: {
         status: "QUEUED",
-        description: "Queued fixture generation",
+        description: "Queued On The Boulevard fixture",
         percent: 12,
       },
     }
@@ -86,7 +98,7 @@ function stageFor(elapsed: number): {
       done: false,
       progress: {
         status: "IN_PROGRESS",
-        description: "Captioning prompt and packing references",
+        description: "Reading floor plan and satellite context",
         percent: 38,
       },
     }
@@ -96,7 +108,7 @@ function stageFor(elapsed: number): {
       done: false,
       progress: {
         status: "IN_PROGRESS",
-        description: "Generating sample world",
+        description: "Laying out the L-shaped strip",
         percent: 67,
       },
     }

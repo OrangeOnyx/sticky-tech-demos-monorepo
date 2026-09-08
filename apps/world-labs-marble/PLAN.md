@@ -1,7 +1,7 @@
 # PLAN — world-labs-marble
 
 ## Goal
-Single-user playground that turns a text prompt and/or 1–3 images into a Marble world via the World API, then shows poll status and an in-browser viewer.
+Single-user playground that turns a text prompt and/or 1–3 images into a Marble world of **On The Boulevard Shopping Center** (101–149 Arnould Blvd, Lafayette LA) via the World API, then shows poll status and an in-browser viewer.
 
 ## Single-user MVP
 - One page: text prompt, optional image uploads (1–3), generate, poll until ready
