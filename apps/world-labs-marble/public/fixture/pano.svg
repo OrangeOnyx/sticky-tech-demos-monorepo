@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" fill="none">
+  <defs>
+    <linearGradient id="pano" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="40%" stop-color="#6366f1"/>
+      <stop offset="70%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="400" fill="url(#pano)"/>
+  <ellipse cx="800" cy="310" rx="900" ry="90" fill="#0369a1" opacity="0.45"/>
+  <rect x="220" y="160" width="70" height="110" fill="#e7e5e4"/>
+  <rect x="1180" y="140" width="50" height="140" fill="#a8a29e"/>
+</svg>
