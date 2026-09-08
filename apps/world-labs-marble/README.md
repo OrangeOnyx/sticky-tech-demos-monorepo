@@ -2,15 +2,19 @@
 
 Single-user demo of the Marble World API for **On The Boulevard Shopping Center** (Belle Realty / OTB) at 101–149 Arnould Blvd, Lafayette, LA.
 
+Windows / Node (no Bun):
+
 ```bash
 cd apps/world-labs-marble
-bun install
-bun run dev
+npm install
+npm run dev:node
 ```
 
-Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Both Vite and the Bun API bind to `127.0.0.1`; the API defaults to port `3001`. Vite exits if `5173` is occupied.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173). The API listens on `127.0.0.1:3001`. `npm run dev` is the same Node path. Vite exits if `5173` is occupied.
 
-This unauthenticated playground is local-only, including fixture mode. Do not expose it through `--host`, port forwarding, or a public reverse proxy. Remote access requires a separate authenticated design. API requests from foreign Host/Origin headers are rejected; the UI uses the same-origin Vite proxy, so wildcard CORS is unnecessary.
+Bun is optional (`bun install && bun run dev:bun`).
+
+This unauthenticated playground is local-only, including fixture mode. Do not expose it through `--host`, port forwarding, or a public reverse proxy. Remote access requires a separate authenticated design. API requests from foreign Host/Origin headers are rejected; the UI uses the same-origin Vite proxy.
 
 The form prefills the OTB prompt plus Marble’s three-image set. Those slots are **real photographs** of the strip from Adam’s Nov 2020 Dropbox pack (`On The Boulevard 53.jpg` through `99.jpg`), not Atlas or Drive stand-ins:
 
@@ -29,9 +33,9 @@ Secondary CAD/sat copies remain at `public/otb/floorplan-center.png` and `public
 | Mode | When | What happens |
 | --- | --- | --- |
 | **Fixture** | `WLT_API_KEY` is missing | UI still runs. Generate starts a local mock job, polls until ready (~4.5s), and opens an L-shaped OTB stand-in textured from the Nov 2020 stills (cream fascia, white columns, aqua walkway, brown shingles). |
-| **Live** | `WLT_API_KEY` is set | The Bun server calls `https://api.worldlabs.ai/marble/v1` with the `WLT-Api-Key` header. The browser never sees the key. When an SPZ URL is returned, Spark renders it; otherwise you get thumbnail/pano plus an Open in Marble link. |
+| **Live** | `WLT_API_KEY` is set | The API server calls `https://api.worldlabs.ai/marble/v1` with the `WLT-Api-Key` header. The browser never sees the key. When an SPZ URL is returned, Spark renders it; otherwise you get thumbnail/pano plus an Open in Marble link. |
 
-`bun install && bun run dev` is enough to see the page. Fixture mode is the default in this repo because no key is committed.
+`npm install && npm run dev:node` is enough to see the page. Fixture mode is the default in this repo because no key is committed. Copy `.env.example` to `.env` and set `WLT_API_KEY` for live Marble — Node loads that file (Bun auto-loads `.env`; this app also loads it under `tsx`).
 
 ## Environment
 
@@ -49,12 +53,14 @@ Get a key from the [World Labs Platform](https://platform.worldlabs.ai/). Live g
 
 | Script | Purpose |
 | --- | --- |
-| `bun run dev` | Vite UI + Bun API together |
-| `bun run build` | Production client build |
-| `bun test` | Prompt, fixture-job, env-mode, loopback/security, and proxy-port tests |
+| `npm run dev` / `npm run dev:node` | Vite UI + Node API together (`tsx`, no Bun) |
+| `npm run dev:api` | API only (`tsx server/index.ts`) |
+| `npm run dev:ui` | Vite only (loopback) |
+| `npm test` | `node:test` via `tsx` (no Bun) |
+| `bun run dev:bun` | Optional Bun spawn of API + Vite |
 
 ## Stack
 
-Vite + React + shadcn/ui, Bun, Three.js, `@sparkjsdev/spark`. Official Marble samples are vanilla HTML; this demo stays on Vite because there is no Next-only SDK requirement.
+Vite + React + shadcn/ui, Node (`tsx`) or optional Bun, Three.js, `@sparkjsdev/spark`. Official Marble samples are vanilla HTML; this demo stays on Vite because there is no Next-only SDK requirement.
 
 Out of scope: Atlas / multi-camera, auth, game engine, Cloudflare Pages.

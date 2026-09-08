@@ -1,4 +1,5 @@
-import { test, expect } from "bun:test"
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import {
   createFixtureJob,
   fixtureDurationMs,
@@ -14,26 +15,28 @@ test("fixture job polls from queued to ready", () => {
     display_name: "Greenhouse",
   })
 
-  expect(started.done).toBe(false)
-  expect(started.source).toBe("fixture")
-  expect(started.metadata?.world_id).toBeTruthy()
+  assert.equal(started.done, false)
+  assert.equal(started.source, "fixture")
+  assert.ok(started.metadata?.world_id)
 
   const mid = getFixtureOperation(started.operation_id)
-  expect(mid?.done).toBe(false)
-  expect(mid?.metadata?.progress?.percent).toBeGreaterThan(0)
+  assert.equal(mid?.done, false)
+  assert.ok((mid?.metadata?.progress?.percent ?? 0) > 0)
 
   const originalNow = Date.now
   Date.now = () => originalNow() + fixtureDurationMs() + 10
   try {
     const done = getFixtureOperation(started.operation_id)
-    expect(done?.done).toBe(true)
-    expect(done?.response?.id).toBe(started.metadata?.world_id)
-    expect(done?.response?.source).toBe("fixture")
-    expect(done?.response?.display_name).toBe("Greenhouse")
-    expect(getFixtureWorld(done!.response!.id)?.assets?.thumbnail_url).toBe(
+    assert.equal(done?.done, true)
+    assert.equal(done?.response?.id, started.metadata?.world_id)
+    assert.equal(done?.response?.source, "fixture")
+    assert.equal(done?.response?.display_name, "Greenhouse")
+    assert.equal(
+      getFixtureWorld(done!.response!.id)?.assets?.thumbnail_url,
       "/otb/otb-dropbox-53.jpg",
     )
-    expect(getFixtureWorld(done!.response!.id)?.assets?.imagery?.pano_url).toBe(
+    assert.equal(
+      getFixtureWorld(done!.response!.id)?.assets?.imagery?.pano_url,
       "/otb/otb-dropbox-99.jpg",
     )
   } finally {
@@ -52,10 +55,10 @@ test("OTB fixture caption names the shopping center", () => {
   Date.now = () => originalNow() + fixtureDurationMs() + 10
   try {
     const done = getFixtureOperation(started.operation_id)
-    expect(done?.response?.display_name).toBe("On The Boulevard")
-    expect(done?.response?.assets?.caption).toContain("On The Boulevard")
-    expect(done?.response?.assets?.caption).toContain("Arnould Blvd")
-    expect(done?.response?.assets?.caption).toContain("Nov 2020")
+    assert.equal(done?.response?.display_name, "On The Boulevard")
+    assert.ok(done?.response?.assets?.caption?.includes("On The Boulevard"))
+    assert.ok(done?.response?.assets?.caption?.includes("Arnould Blvd"))
+    assert.ok(done?.response?.assets?.caption?.includes("Nov 2020"))
   } finally {
     Date.now = originalNow
   }
@@ -63,5 +66,5 @@ test("OTB fixture caption names the shopping center", () => {
 
 test("unknown fixture operation is null", () => {
   resetFixtureStore()
-  expect(getFixtureOperation("missing")).toBeNull()
+  assert.equal(getFixtureOperation("missing"), null)
 })

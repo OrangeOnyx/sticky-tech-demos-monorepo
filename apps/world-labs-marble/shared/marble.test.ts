@@ -1,4 +1,5 @@
-import { test, expect } from "bun:test"
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import { isAllowedAssetUrl, pickSplatUrl } from "./world-assets"
 import type { World } from "./types"
 
@@ -15,14 +16,15 @@ test("picks a mid-res splat URL when available", () => {
       },
     },
   }
-  expect(pickSplatUrl(world)).toBe("https://example/500k.spz")
+  assert.equal(pickSplatUrl(world), "https://example/500k.spz")
 })
 
 test("allows Marble and GCS asset hosts only", () => {
-  expect(
+  assert.equal(
     isAllowedAssetUrl("https://storage.googleapis.com/bucket/world.spz"),
-  ).toBe(true)
-  expect(isAllowedAssetUrl("https://marble.worldlabs.ai/world/abc")).toBe(true)
-  expect(isAllowedAssetUrl("https://evil.example/steal")).toBe(false)
-  expect(isAllowedAssetUrl("http://storage.googleapis.com/x")).toBe(false)
+    true,
+  )
+  assert.equal(isAllowedAssetUrl("https://marble.worldlabs.ai/world/abc"), true)
+  assert.equal(isAllowedAssetUrl("https://evil.example/steal"), false)
+  assert.equal(isAllowedAssetUrl("http://storage.googleapis.com/x"), false)
 })

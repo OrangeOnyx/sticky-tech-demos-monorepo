@@ -1,10 +1,13 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http"
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 import { resolveApiPort, resolveAppConfig } from "../shared/env"
 import {
   createFixtureJob,
   getFixtureOperation,
   getFixtureWorld,
 } from "../shared/fixture"
+import { loadDotenv } from "../shared/load-env"
 import {
   generateWorld,
   getOperation,
@@ -19,6 +22,8 @@ import {
   selectModel,
 } from "../shared/prompt"
 import type { GenerateRequest } from "../shared/types"
+
+loadDotenv(resolve(dirname(fileURLToPath(import.meta.url)), ".."))
 
 const PORT = resolveApiPort(process.env)
 const UI_PORT = 5173

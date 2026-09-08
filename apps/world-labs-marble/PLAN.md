@@ -5,9 +5,9 @@ Single-user playground that turns a text prompt and/or 1–3 images into a Marbl
 
 ## Single-user MVP
 - One page: text prompt, optional image uploads (1–3), generate, poll until ready
-- Bun server calls `https://api.worldlabs.ai/marble/v1` with `WLT-Api-Key`; the browser never sees the key
+- Bun server **or Node `tsx`** calls `https://api.worldlabs.ai/marble/v1` with `WLT-Api-Key`; the browser never sees the key
 - In-browser viewer: Spark splat viewer when an SPZ URL exists; otherwise Marble open-link + thumbnail/pano + status
-- Env: `WLT_API_KEY` for live Marble; **fixture/demo mode** when missing so `bun install && bun run dev` still runs the full flow with a mock job and sample world
+- Env: `WLT_API_KEY` for live Marble; **fixture/demo mode** when missing so `npm install && npm run dev:node` still runs the full flow with a mock job and sample world
 - Default generate payload: OTB prompt + three real Nov 2020 Dropbox stills (`otb-dropbox-53.jpg` elevated strip, `otb-dropbox-70.jpg` Politics interior, `otb-dropbox-80.jpg` Pink Paisley interior). Library keeps 60/90/99 as well. Do not commit `DJI_0030.MOV`.
 - Self-contained under `apps/world-labs-marble/`
 
@@ -23,11 +23,11 @@ Single-user playground that turns a text prompt and/or 1–3 images into a Marbl
 1. Scaffold Vite + React + `bunfig.toml` (`minimumReleaseAge = 259200`) + shadcn minimal UI
 2. Bun API: generate → poll operation → fetch world; fixture store when no key
 3. Playground UI: prompt + uploads, job status, viewer / open-result
-4. README: env vars, fixture vs live, `bun run dev`
+4. README: env vars, fixture vs live, `npm run dev:node` (Windows / Node first; Bun optional)
 5. Validation: screenshot + video of the running fixture flow for the PR
 
 ## Stack (one-line rationale)
-- **Bun** — monorepo default runtime/PM
+- **Node (`tsx`)** — Windows-first runtime for API + Vite; Bun optional
 - **Vite + React** — one-screen playground; Marble has no Next-only SDK requirement
 - **shadcn/ui** — minimalist form, badges, status
 - **World Labs Marble World API** — generate + operations poll

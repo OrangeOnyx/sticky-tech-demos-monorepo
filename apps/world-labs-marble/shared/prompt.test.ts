@@ -1,4 +1,5 @@
-import { test, expect } from "bun:test"
+import assert from "node:assert/strict"
+import { test } from "node:test"
 import { buildWorldPrompt, PromptError, selectModel } from "./prompt"
 
 test("text-only prompt", () => {
@@ -6,7 +7,7 @@ test("text-only prompt", () => {
     text_prompt: "A mossy coastal castle at dusk",
     auto_enhance: true,
   })
-  expect(prompt).toEqual({
+  assert.deepEqual(prompt, {
     type: "text",
     text_prompt: "A mossy coastal castle at dusk",
     disable_recaption: false,
@@ -26,10 +27,10 @@ test("one image uses image prompt", () => {
       },
     ],
   })
-  expect(prompt.type).toBe("image")
+  assert.equal(prompt.type, "image")
   if (prompt.type === "image") {
-    expect(prompt.image_prompt.source).toBe("data_base64")
-    expect(prompt.disable_recaption).toBe(true)
+    assert.equal(prompt.image_prompt.source, "data_base64")
+    assert.equal(prompt.disable_recaption, true)
   }
 })
 
@@ -41,19 +42,20 @@ test("two or three images use multi-image with azimuths", () => {
       { name: "c.jpg", mime: "image/jpeg", extension: "jpg", data_base64: "c" },
     ],
   })
-  expect(prompt.type).toBe("multi-image")
+  assert.equal(prompt.type, "multi-image")
   if (prompt.type === "multi-image") {
-    expect(prompt.multi_image_prompt.map((item) => item.azimuth)).toEqual([
-      0, 120, 240,
-    ])
+    assert.deepEqual(
+      prompt.multi_image_prompt.map((item) => item.azimuth),
+      [0, 120, 240],
+    )
   }
 })
 
 test("rejects empty generate requests", () => {
-  expect(() => buildWorldPrompt({})).toThrow(PromptError)
+  assert.throws(() => buildWorldPrompt({}), PromptError)
 })
 
 test("draft model maps to marble-1.0-draft", () => {
-  expect(selectModel(true)).toBe("marble-1.0-draft")
-  expect(selectModel(false)).toBe("marble-1.1")
+  assert.equal(selectModel(true), "marble-1.0-draft")
+  assert.equal(selectModel(false), "marble-1.1")
 })
