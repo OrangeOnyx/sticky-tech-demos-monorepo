@@ -104,8 +104,8 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
       <CardHeader>
         <CardTitle>Generate</CardTitle>
         <CardDescription>
-          Prefills On The Boulevard (floor plan + satellite). Generate, poll,
-          then view.
+          Prefills On The Boulevard (floor plan, nadir, isometric look).
+          Generate, poll, then view.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -147,8 +147,9 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                 placeholder={OTB_PROMPT}
               />
               <FieldDescription>
-                Default prompt is the Lafayette strip. Replace or add photos
-                from Drive <code>00 OTB</code> for a live Marble run.
+                Default prompt is the Lafayette strip. The three seeds map to
+                Drive <code>00 OTB</code> (whole-center floor plan, georef
+                nadir, marketing look). Swap any of them before generate.
               </FieldDescription>
             </Field>
             <Field>
@@ -168,7 +169,7 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                 <FieldDescription>{seedError}</FieldDescription>
               ) : null}
               {images.length > 0 ? (
-                <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="grid grid-cols-3 gap-2 pt-1">
                   {images.map((image, index) => (
                     <div
                       key={`${image.name}-${index}`}

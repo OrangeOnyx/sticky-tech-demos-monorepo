@@ -10,27 +10,26 @@ bun run dev
 
 Open [http://localhost:5173](http://localhost:5173). The Bun API listens on port `3001`.
 
-The form prefills the OTB prompt plus two local references copied from `OrangeOnyx/otb-command`:
+The form prefills the OTB prompt plus Marble’s three-image set. Those slots map to Drive `G:\My Drive\00 OTB`:
 
-- `public/otb/floorplan-center.png` — whole-center floor plan
-- `public/otb/OTB-sat-base.jpg` — satellite context
+| Slot | Drive original | Bundled file |
+| --- | --- | --- |
+| 1. Whole-center floor plan | `Floor Plan Whole Center Final.png` | `public/otb/floorplan-center.png` |
+| 2. Georef nadir aerial | `georef-fit-nadir.png` | `public/otb/OTB-sat-base.jpg` |
+| 3. Target look / massing | `Belle Realty SOT Documents/Style I would like to get the center to look like for marketing.png` | `public/otb/spatial-isometric.png` |
 
-CAD layout lives in that repo at `cad/Boulev_CLEAN.dxf`. Marble does not ingest DXF; this demo uses the floor-plan PNG instead.
+Floor plan and nadir are the otb-command public copies of this property (`public/floorplan-center.png`, `public/OTB-sat-base.jpg`). Slot 3 is the Atlas spatial isometric of the same L-shaped strip (otb-command `public/manual/img/spatial.png`) so Marble still gets a 3D massing cue; the default **text prompt** carries the Mediterranean / Mission marketing look (peach stucco, clay tile, palms). Drop the live Drive PNGs over those paths (or swap them in the form) when they are on disk. `drone.png` from the same Drive folder is optional and not in the default 1–3 set.
+
+CAD layout lives in otb-command at `cad/Boulev_CLEAN.dxf`. Marble does not ingest DXF; this demo uses the floor-plan PNG instead.
 
 ## Fixture vs live
 
 | Mode | When | What happens |
 | --- | --- | --- |
-| **Fixture** | `WLT_API_KEY` is missing | UI still runs. Generate starts a local mock job, polls until ready (~4.5s), and opens an L-shaped OTB stand-in (floor plan + satellite textures). |
+| **Fixture** | `WLT_API_KEY` is missing | UI still runs. Generate starts a local mock job, polls until ready (~4.5s), and opens an L-shaped OTB stand-in (nadir parking texture, floor-plan overlay, peach stucco / clay-tile massing). |
 | **Live** | `WLT_API_KEY` is set | The Bun server calls `https://api.worldlabs.ai/marble/v1` with the `WLT-Api-Key` header. The browser never sees the key. When an SPZ URL is returned, Spark renders it; otherwise you get thumbnail/pano plus an Open in Marble link. |
 
 `bun install && bun run dev` is enough to see the page. Fixture mode is the default in this repo because no key is committed.
-
-## Operator photos (live runs)
-
-Richer site photos are on Google Drive at `G:\My Drive\00 OTB` (floor plan of the whole center, georeferenced shots, etc.). This VM cannot read Drive. For a live Marble generation, copy additional photos from that folder into the form (up to 3 images) alongside or instead of the bundled floor plan and satellite.
-
-Canonical copies of the bundled images also live in `OrangeOnyx/otb-command` under `public/`. Do not invent a second asset vault.
 
 ## Environment
 

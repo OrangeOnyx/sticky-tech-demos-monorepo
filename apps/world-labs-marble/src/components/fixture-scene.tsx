@@ -33,8 +33,8 @@ export function FixtureScene() {
     if (!host) return
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x87a0b8)
-    scene.fog = new THREE.Fog(0x87a0b8, 18, 55)
+    scene.background = new THREE.Color(0x6d7c88)
+    scene.fog = new THREE.Fog(0x6d7c88, 18, 55)
 
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 80)
     camera.position.set(-2.4, 6.2, 11.5)
@@ -51,7 +51,7 @@ export function FixtureScene() {
     controls.minDistance = 4
     controls.maxDistance = 24
 
-    scene.add(new THREE.HemisphereLight(0xf3f0e8, 0x4a5a3a, 1.05))
+    scene.add(new THREE.HemisphereLight(0xfff1e0, 0x4a5a3a, 1.05))
     const sun = new THREE.DirectionalLight(0xfff4dd, 1.8)
     sun.position.set(-8, 14, 6)
     sun.castShadow = true
@@ -86,15 +86,20 @@ export function FixtureScene() {
     walkV.receiveShadow = true
     scene.add(walkV)
 
-    const roof = 0xe8e6e1
-    const tan = 0xc4b49a
-    const white = 0xf2f0ea
+    const stucco = 0xe8c4a0
+    const stuccoAlt = 0xf3d7b8
+    const clay = 0xc45c38
+    const glass = 0x7aa8c9
     const unitWidths = [2.4, 1.2, 1.1, 1.4, 1.2, 1.3, 1.1, 1.5, 1.2, 1.1, 1.3, 1.2, 1.4, 1.1, 1.6]
     let cursor = -8.6
     for (const [index, width] of unitWidths.entries()) {
-      const color = index % 2 === 0 ? tan : white
+      const color = index % 2 === 0 ? stucco : stuccoAlt
       box(scene, width - 0.08, 2.15, 2.4, cursor + width / 2, 1.08, -3.35, color)
-      box(scene, width - 0.08, 0.18, 2.55, cursor + width / 2, 2.22, -3.35, roof)
+      box(scene, width - 0.08, 0.22, 2.7, cursor + width / 2, 2.24, -3.35, clay)
+      box(scene, width - 0.28, 0.95, 0.08, cursor + width / 2, 0.95, -2.12, glass, {
+        roughness: 0.2,
+        metalness: 0.15,
+      })
       box(scene, 0.12, 2.0, 0.12, cursor + 0.18, 1.15, -2.05, 0x1a1a1a)
       cursor += width
     }
@@ -102,12 +107,26 @@ export function FixtureScene() {
     const wingWidths = [1.8, 1.5, 1.4, 1.6, 2.2]
     let zCursor = -1.9
     for (const [index, depth] of wingWidths.entries()) {
-      const color = index % 2 === 0 ? white : tan
+      const color = index % 2 === 0 ? stuccoAlt : stucco
       box(scene, 2.5, 2.15, depth - 0.08, 9.15, 1.08, zCursor + depth / 2, color)
-      box(scene, 2.65, 0.18, depth - 0.08, 9.15, 2.22, zCursor + depth / 2, roof)
+      box(scene, 2.75, 0.22, depth - 0.08, 9.15, 2.24, zCursor + depth / 2, clay)
+      box(scene, 0.08, 0.95, depth - 0.28, 7.88, 0.95, zCursor + depth / 2, glass, {
+        roughness: 0.2,
+        metalness: 0.15,
+      })
       box(scene, 0.12, 2.0, 0.12, 7.8, 1.15, zCursor + 0.3, 0x1a1a1a)
       zCursor += depth
     }
+
+    const tower = box(scene, 1.4, 3.2, 1.4, 9.15, 1.7, 8.4, stucco)
+    tower.castShadow = true
+    const cone = new THREE.Mesh(
+      new THREE.ConeGeometry(1.05, 1.15, 10),
+      new THREE.MeshStandardMaterial({ color: clay, roughness: 0.7 }),
+    )
+    cone.position.set(9.15, 3.85, 8.4)
+    cone.castShadow = true
+    scene.add(cone)
 
     const plan = new THREE.Mesh(
       new THREE.PlaneGeometry(7.2, 3.1),
@@ -129,17 +148,37 @@ export function FixtureScene() {
       [5.8, 5.1],
       [-6.8, 7.8],
     ] as const) {
-      const canopy = new THREE.Mesh(
-        new THREE.SphereGeometry(0.55, 10, 8),
-        new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: 0.9 }),
+      box(scene, 0.16, 2.4, 0.16, x, 1.2, z, 0x6b4a2a)
+      const frond = new THREE.Mesh(
+        new THREE.SphereGeometry(0.85, 10, 8),
+        new THREE.MeshStandardMaterial({ color: 0x2f7a3e, roughness: 0.9 }),
       )
-      canopy.position.set(x, 1.1, z)
-      canopy.castShadow = true
-      scene.add(canopy)
-      box(scene, 0.14, 1.1, 0.14, x, 0.55, z, 0x5b4636)
+      frond.position.set(x, 2.55, z)
+      frond.scale.set(1, 0.55, 1)
+      frond.castShadow = true
+      scene.add(frond)
     }
 
-    const sign = box(scene, 2.6, 0.7, 0.12, -6.4, 1.55, 3.8, 0x1f3a5f)
+    for (const [x, z] of [
+      [-5.2, 2.4],
+      [-0.4, 3.6],
+      [3.8, 2.8],
+      [6.2, 0.4],
+    ] as const) {
+      box(scene, 0.08, 1.7, 0.08, x, 0.85, z, 0x1a1a1a)
+      const lamp = new THREE.Mesh(
+        new THREE.SphereGeometry(0.12, 8, 8),
+        new THREE.MeshStandardMaterial({
+          color: 0xfff3c4,
+          emissive: 0xffe08a,
+          emissiveIntensity: 0.6,
+        }),
+      )
+      lamp.position.set(x, 1.78, z)
+      scene.add(lamp)
+    }
+
+    const sign = box(scene, 2.6, 0.7, 0.12, -6.4, 1.55, 3.8, 0xc9a227)
     sign.rotation.y = 0.35
 
     const resize = () => {
@@ -174,7 +213,7 @@ export function FixtureScene() {
     <div className="relative min-h-80">
       <div ref={hostRef} className="min-h-80 w-full" />
       <p className="pointer-events-none absolute bottom-3 left-3 right-3 text-xs text-zinc-100/90">
-        On The Boulevard · fixture strip · drag to look · scroll to zoom
+        On The Boulevard · fixture strip · peach stucco / clay tile · drag to look
       </p>
     </div>
   )
