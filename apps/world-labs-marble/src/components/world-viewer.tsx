@@ -74,19 +74,6 @@ export function WorldViewer({ world }: Props) {
             </EmptyHeader>
             <div className="flex w-full max-w-xl flex-col gap-3 px-4 pb-4">
               <p className="text-xs font-medium text-muted-foreground">
-                Dropbox stills (Nov 2020)
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {OTB_DROPBOX_ASSETS.map((asset) => (
-                  <img
-                    key={asset.url}
-                    src={asset.url}
-                    alt={asset.label}
-                    className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
-                  />
-                ))}
-              </div>
-              <p className="text-xs font-medium text-muted-foreground">
                 Drive + PostShot
               </p>
               <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -116,6 +103,19 @@ export function WorldViewer({ world }: Props) {
                 src={OTB_AERIAL_PREVIEW.url}
                 aria-label={OTB_AERIAL_PREVIEW.label}
               />
+              <p className="text-xs font-medium text-muted-foreground">
+                Dropbox stills (Nov 2020)
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {OTB_DROPBOX_ASSETS.map((asset) => (
+                  <img
+                    key={asset.url}
+                    src={asset.url}
+                    alt={asset.label}
+                    className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
+                  />
+                ))}
+              </div>
             </div>
           </Empty>
         ) : (
