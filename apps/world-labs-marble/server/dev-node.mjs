@@ -4,13 +4,18 @@ import { fileURLToPath } from "node:url"
 
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const isWin = process.platform === "win32"
+const pathKey = isWin && process.env.Path ? "Path" : "PATH"
+const env = {
+  ...process.env,
+  [pathKey]: `${resolve(appRoot, "node_modules", ".bin")}${isWin ? ";" : ":"}${process.env[pathKey] ?? process.env.PATH ?? ""}`,
+}
 
 function run(bin, args) {
   return spawn(bin, args, {
     cwd: appRoot,
     stdio: "inherit",
     shell: isWin,
-    env: process.env,
+    env,
     windowsHide: true,
   })
 }

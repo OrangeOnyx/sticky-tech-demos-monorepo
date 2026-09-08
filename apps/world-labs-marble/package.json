@@ -15,7 +15,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "tsx --test shared/env.test.ts shared/otb.test.ts shared/fixture.test.ts shared/marble.test.ts shared/prompt.test.ts shared/load-env.test.ts server/local-only.test.ts"
+    "test": "tsx --test --test-concurrency=1 shared/env.test.ts shared/otb.test.ts shared/fixture.test.ts shared/marble.test.ts shared/prompt.test.ts shared/load-env.test.ts server/local-only.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
