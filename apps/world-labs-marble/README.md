@@ -16,9 +16,14 @@ Bun is optional (`bun install && bun run dev:bun`).
 
 This unauthenticated playground is local-only, including fixture mode. Do not expose it through `--host`, port forwarding, or a public reverse proxy. Remote access requires a separate authenticated design. API requests from foreign Host/Origin headers are rejected; the UI uses the same-origin Vite proxy.
 
-The form prefills the OTB prompt plus Marble’s three-image set. Those slots stay **real Nov 2020 Dropbox photographs** (`On The Boulevard 53.jpg` / `70.jpg` / `80.jpg`). Marble accepts at most three images, so generate does **not** auto-attach Drive files.
+The form prefills the OTB prompt plus Marble’s three-image set. Those slots stay **real Nov 2020 Dropbox photographs** (`On The Boulevard 53.jpg` / `70.jpg` / `80.jpg`). Marble accepts at most three images, so generate does **not** auto-attach Drive, roof-brief, or plat files.
 
-The library and empty viewer also show **live Drive + PostShot bytes** (not Atlas stand-ins): whole-center floorplan, nadir georef, drone still, PostShot check/source, plus a 12s aerial preview mp4 used as a media reference only.
+The library and empty viewer also show:
+
+- **Live Drive + PostShot bytes** under `public/otb/drive/` (floorplan, nadir, drone, PostShot check/source) plus a 12s aerial preview mp4 used as a media reference only.
+- **otb-command roof-brief** under `public/otb/roof-brief/` — membrane failure, thermal, nadir 101, flight-track SVG (SVG is not a Marble generate input).
+- **Site plats / parking stills** under `public/otb/reference/`.
+- **Atlas 3D** under `public/otb/atlas/`: `OTB-mesh.glb` (~3MB) and `OTB-splat.ksplat` (~17MB). The idle viewer can open the splat in Spark and the mesh in Three.js. They are optional references, not Marble generate inputs. See `public/otb/OTB-COMMAND-SOURCES.md`.
 
 | Slot | Dropbox original | Bundled file |
 | --- | --- | --- |
@@ -26,7 +31,7 @@ The library and empty viewer also show **live Drive + PostShot bytes** (not Atla
 | 2. Politics boutique interior | `On The Boulevard 70.jpg` | `public/otb/otb-dropbox-70.jpg` |
 | 3. Pink Paisley mezzanine interior | `On The Boulevard 80.jpg` | `public/otb/otb-dropbox-80.jpg` |
 
-The viewer empty state also shows Dropbox 60 / 90 / 99. Click a Drive or Dropbox library still in the form to swap a generate slot. The ~550MB drone clip `Drone Footage RAW/DJI_0030.MOV` lives in that Dropbox folder and is **not** in git.
+The viewer empty state also shows Dropbox 60 / 90 / 99. Click a library still in the form to swap a generate slot. The ~550MB drone clip `Drone Footage RAW/DJI_0030.MOV` lives in that Dropbox folder and is **not** in git.
 
 Drive / PostShot copies (web-sized) live under `public/otb/drive/` — see `SOURCES.md` there. Secondary CAD/sat copies remain at `public/otb/floorplan-center.png` and `public/otb/OTB-sat-base.jpg`.
 

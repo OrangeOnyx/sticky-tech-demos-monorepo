@@ -18,11 +18,15 @@ import {
 import { pickSplatUrl } from "@shared/world-assets"
 import {
   OTB_AERIAL_PREVIEW,
+  OTB_ATLAS,
   OTB_DRIVE_FEATURED_ASSETS,
   OTB_DROPBOX_ASSETS,
+  OTB_FLIGHT_TRACK,
+  OTB_ROOF_BRIEF_FEATURED_ASSETS,
+  OTB_SITE_REFERENCE_FEATURED_ASSETS,
 } from "@shared/otb"
 import { BoxIcon, ExternalLinkIcon } from "lucide-react"
-import { lazy, Suspense, useMemo } from "react"
+import { lazy, Suspense, useMemo, useState } from "react"
 
 const SparkViewer = lazy(async () => {
   const module = await import("@/components/spark-viewer")
@@ -34,9 +38,16 @@ const FixtureScene = lazy(async () => {
   return { default: module.FixtureScene }
 })
 
+const AtlasMeshViewer = lazy(async () => {
+  const module = await import("@/components/atlas-mesh-viewer")
+  return { default: module.AtlasMeshViewer }
+})
+
 type Props = {
   world: World | null
 }
+
+type AtlasMode = "stills" | "splat" | "mesh"
 
 export function WorldViewer({ world }: Props) {
   const splatUrl = useMemo(() => (world ? pickSplatUrl(world) : null), [world])
@@ -45,6 +56,7 @@ export function WorldViewer({ world }: Props) {
   const marbleUrl = world?.world_marble_url
   const openUrl =
     marbleUrl && marbleUrl.startsWith("http") ? marbleUrl : null
+  const [atlasMode, setAtlasMode] = useState<AtlasMode>("stills")
 
   return (
     <Card className="min-h-[28rem]">
@@ -53,7 +65,7 @@ export function WorldViewer({ world }: Props) {
           <CardTitle>{world?.display_name || "Viewer"}</CardTitle>
           <CardDescription>
             {world?.assets?.caption ||
-              "Gaussian splat via Spark when an SPZ is present. Fixture mode stands in with an On The Boulevard strip. Empty state shows Dropbox stills plus live Drive / PostShot media."}
+              "Gaussian splat via Spark when an SPZ is present. Fixture mode stands in with an On The Boulevard strip. Empty state shows roof-brief, site plats, Drive / PostShot, and optional atlas 3D."}
           </CardDescription>
         </div>
         {world ? (
@@ -68,55 +80,103 @@ export function WorldViewer({ world }: Props) {
               <EmptyTitle>On The Boulevard</EmptyTitle>
               <EmptyDescription>
                 Generate defaults are Dropbox 53 / 70 / 80. The library also
-                has live Drive floorplan, nadir, drone, and PostShot stills —
-                not Atlas stand-ins. The aerial clip is a reference only.
+                has otb-command roof-brief and site plats, plus live Drive /
+                PostShot stills. Atlas mesh/splat are optional 3D references.
               </EmptyDescription>
             </EmptyHeader>
-            <div className="flex w-full max-w-xl flex-col gap-3 px-4 pb-4">
-              <p className="text-xs font-medium text-muted-foreground">
-                Drive + PostShot
-              </p>
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-                {OTB_DRIVE_FEATURED_ASSETS.map((asset) => (
-                  <figure key={asset.url} className="space-y-1">
+            <div className="flex flex-wrap justify-center gap-2 px-4">
+              <Button
+                type="button"
+                size="sm"
+                variant={atlasMode === "stills" ? "default" : "outline"}
+                onClick={() => setAtlasMode("stills")}
+              >
+                Stills
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={atlasMode === "splat" ? "default" : "outline"}
+                onClick={() => setAtlasMode("splat")}
+              >
+                Atlas splat
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant={atlasMode === "mesh" ? "default" : "outline"}
+                onClick={() => setAtlasMode("mesh")}
+              >
+                Atlas mesh
+              </Button>
+            </div>
+            {atlasMode === "splat" ? (
+              <div className="w-full overflow-hidden rounded-xl bg-zinc-950 ring-1 ring-foreground/10">
+                <Suspense fallback={<ViewerFallback />}>
+                  <SparkViewer url={OTB_ATLAS.splatUrl} flipX={false} />
+                </Suspense>
+                <p className="px-3 py-2 text-left text-[11px] text-muted-foreground">
+                  {OTB_ATLAS.splatLabel} · Spark .ksplat
+                </p>
+              </div>
+            ) : atlasMode === "mesh" ? (
+              <div className="w-full overflow-hidden rounded-xl bg-zinc-950 ring-1 ring-foreground/10">
+                <Suspense fallback={<ViewerFallback />}>
+                  <AtlasMeshViewer url={OTB_ATLAS.meshUrl} />
+                </Suspense>
+                <p className="px-3 py-2 text-left text-[11px] text-muted-foreground">
+                  {OTB_ATLAS.meshLabel} · Three.js GLB
+                </p>
+              </div>
+            ) : (
+              <div className="flex w-full max-w-xl flex-col gap-3 px-4 pb-4">
+                <AssetRow
+                  title="Roof brief (otb-command)"
+                  assets={OTB_ROOF_BRIEF_FEATURED_ASSETS}
+                />
+                <figure className="space-y-1">
+                  <img
+                    src={OTB_FLIGHT_TRACK.url}
+                    alt={OTB_FLIGHT_TRACK.label}
+                    className="h-24 w-full rounded-md bg-background object-contain ring-1 ring-foreground/10"
+                  />
+                  <figcaption className="truncate text-[10px] leading-tight text-muted-foreground">
+                    {OTB_FLIGHT_TRACK.label} · not a Marble input
+                  </figcaption>
+                </figure>
+                <AssetRow
+                  title="Site reference"
+                  assets={OTB_SITE_REFERENCE_FEATURED_ASSETS}
+                />
+                <AssetRow title="Drive + PostShot" assets={OTB_DRIVE_FEATURED_ASSETS} />
+                <p className="text-xs font-medium text-muted-foreground">
+                  {OTB_AERIAL_PREVIEW.label}
+                </p>
+                <video
+                  className="aspect-video w-full rounded-md bg-zinc-950 object-cover ring-1 ring-foreground/10"
+                  controls
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  src={OTB_AERIAL_PREVIEW.url}
+                  aria-label={OTB_AERIAL_PREVIEW.label}
+                />
+                <p className="text-xs font-medium text-muted-foreground">
+                  Dropbox stills (Nov 2020)
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {OTB_DROPBOX_ASSETS.map((asset) => (
                     <img
+                      key={asset.url}
                       src={asset.url}
                       alt={asset.label}
                       className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
                     />
-                    <figcaption className="truncate text-[10px] leading-tight text-muted-foreground">
-                      {asset.label}
-                    </figcaption>
-                  </figure>
-                ))}
+                  ))}
+                </div>
               </div>
-              <p className="text-xs font-medium text-muted-foreground">
-                {OTB_AERIAL_PREVIEW.label}
-              </p>
-              <video
-                className="aspect-video w-full rounded-md bg-zinc-950 object-cover ring-1 ring-foreground/10"
-                controls
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                src={OTB_AERIAL_PREVIEW.url}
-                aria-label={OTB_AERIAL_PREVIEW.label}
-              />
-              <p className="text-xs font-medium text-muted-foreground">
-                Dropbox stills (Nov 2020)
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {OTB_DROPBOX_ASSETS.map((asset) => (
-                  <img
-                    key={asset.url}
-                    src={asset.url}
-                    alt={asset.label}
-                    className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
-                  />
-                ))}
-              </div>
-            </div>
+            )}
           </Empty>
         ) : (
           <>
@@ -171,6 +231,34 @@ export function WorldViewer({ world }: Props) {
         )}
       </CardContent>
     </Card>
+  )
+}
+
+function AssetRow({
+  title,
+  assets,
+}: {
+  title: string
+  assets: { url: string; label: string }[]
+}) {
+  return (
+    <>
+      <p className="text-xs font-medium text-muted-foreground">{title}</p>
+      <div className="grid grid-cols-3 gap-2">
+        {assets.map((asset) => (
+          <figure key={asset.url} className="space-y-1">
+            <img
+              src={asset.url}
+              alt={asset.label}
+              className="h-20 w-full rounded-md object-cover ring-1 ring-foreground/10"
+            />
+            <figcaption className="truncate text-[10px] leading-tight text-muted-foreground">
+              {asset.label}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </>
   )
 }
 

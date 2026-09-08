@@ -8,7 +8,7 @@ export const OTB_ADDRESS = "101–149 Arnould Blvd, Lafayette, LA"
 export const OTB_DROPBOX_PACK =
   "Dropbox: On The Boulevard 53.jpg–99.jpg (Nov 2020) plus Drone Footage RAW/DJI_0030.MOV (~550MB, not in git)"
 
-export type OtbAssetKind = "dropbox" | "drive"
+export type OtbAssetKind = "dropbox" | "drive" | "roof-brief" | "reference"
 
 export type OtbReferenceAsset = {
   url: string
@@ -20,6 +20,18 @@ export type OtbReferenceAsset = {
   kind: OtbAssetKind
 }
 
+function still(
+  url: string,
+  name: string,
+  label: string,
+  source: string,
+  kind: OtbAssetKind,
+  mime = "image/jpeg",
+  extension = "jpg",
+): OtbReferenceAsset {
+  return { url, name, mime, extension, label, source, kind }
+}
+
 function jpeg(
   url: string,
   name: string,
@@ -27,7 +39,17 @@ function jpeg(
   source: string,
   kind: OtbAssetKind,
 ): OtbReferenceAsset {
-  return { url, name, mime: "image/jpeg", extension: "jpg", label, source, kind }
+  return still(url, name, label, source, kind)
+}
+
+function png(
+  url: string,
+  name: string,
+  label: string,
+  source: string,
+  kind: OtbAssetKind,
+): OtbReferenceAsset {
+  return still(url, name, label, source, kind, "image/png", "png")
 }
 
 export const OTB_DROPBOX_ASSETS: OtbReferenceAsset[] = [
@@ -156,9 +178,127 @@ export const OTB_DRIVE_ASSETS: OtbReferenceAsset[] = [
   ),
 ]
 
+/** otb-command roof-brief stills. Selectable; not generate defaults. SVG flight track is reference-only. */
+export const OTB_ROOF_BRIEF_ASSETS: OtbReferenceAsset[] = [
+  jpeg(
+    "/otb/roof-brief/01-membrane-failure-close.jpg",
+    "01-membrane-failure-close.jpg",
+    "Membrane failure (close)",
+    "docs/roof-brief-assets/01-membrane-failure-close.jpg",
+    "roof-brief",
+  ),
+  jpeg(
+    "/otb/roof-brief/02-membrane-failure-wider.jpg",
+    "02-membrane-failure-wider.jpg",
+    "Membrane failure (wider)",
+    "docs/roof-brief-assets/02-membrane-failure-wider.jpg",
+    "roof-brief",
+  ),
+  jpeg(
+    "/otb/roof-brief/03-membrane-failure-context-rtu-row.jpg",
+    "03-membrane-failure-context-rtu-row.jpg",
+    "Membrane failure (RTU row)",
+    "docs/roof-brief-assets/03-membrane-failure-context-rtu-row.jpg",
+    "roof-brief",
+  ),
+  jpeg(
+    "/otb/roof-brief/04-thermal-anomaly.jpg",
+    "04-thermal-anomaly.jpg",
+    "Thermal anomaly",
+    "docs/roof-brief-assets/04-thermal-anomaly.jpg",
+    "roof-brief",
+  ),
+  jpeg(
+    "/otb/roof-brief/05-thermal-rgb-companion.jpg",
+    "05-thermal-rgb-companion.jpg",
+    "Thermal RGB companion",
+    "docs/roof-brief-assets/05-thermal-rgb-companion.jpg",
+    "roof-brief",
+  ),
+  jpeg(
+    "/otb/roof-brief/06-nadir-101-end-good-condition.jpg",
+    "06-nadir-101-end-good-condition.jpg",
+    "Nadir 101 end (good condition)",
+    "docs/roof-brief-assets/06-nadir-101-end-good-condition.jpg",
+    "roof-brief",
+  ),
+]
+
+export const OTB_FLIGHT_TRACK = {
+  url: "/otb/roof-brief/07-flight-track.svg",
+  label: "Flight track (SVG)",
+  source: "docs/roof-brief-assets/07-flight-track.svg",
+}
+
+export const OTB_SITE_REFERENCE_ASSETS: OtbReferenceAsset[] = [
+  png(
+    "/otb/reference/plat-full-72.png",
+    "plat-full-72.png",
+    "ALTA plat (full)",
+    "reference/plat-full-72.png",
+    "reference",
+  ),
+  png(
+    "/otb/reference/plat-longbldg-1.png",
+    "plat-longbldg-1.png",
+    "Long building plat",
+    "reference/plat-longbldg-1.png",
+    "reference",
+  ),
+  png(
+    "/otb/reference/hunt-liquor-left-1.png",
+    "hunt-liquor-left-1.png",
+    "Hunt liquor (left)",
+    "reference/hunt-liquor-left-1.png",
+    "reference",
+  ),
+  png(
+    "/otb/reference/park-field-east-1.png",
+    "park-field-east-1.png",
+    "East parking field",
+    "reference/park-field-east-1.png",
+    "reference",
+  ),
+  png(
+    "/otb/reference/park-field-west-1.png",
+    "park-field-west-1.png",
+    "West parking field",
+    "reference/park-field-west-1.png",
+    "reference",
+  ),
+  png(
+    "/otb/reference/park-bank-notch-1.png",
+    "park-bank-notch-1.png",
+    "Bank notch parking",
+    "reference/park-bank-notch-1.png",
+    "reference",
+  ),
+]
+
+export const OTB_ROOF_BRIEF_FEATURED_ASSETS: OtbReferenceAsset[] = [
+  OTB_ROOF_BRIEF_ASSETS[0],
+  OTB_ROOF_BRIEF_ASSETS[3],
+  OTB_ROOF_BRIEF_ASSETS[5],
+]
+
+export const OTB_SITE_REFERENCE_FEATURED_ASSETS: OtbReferenceAsset[] = [
+  OTB_SITE_REFERENCE_ASSETS[0],
+  OTB_SITE_REFERENCE_ASSETS[1],
+  OTB_SITE_REFERENCE_ASSETS[2],
+]
+
+export const OTB_ATLAS = {
+  meshUrl: "/otb/atlas/OTB-mesh.glb",
+  splatUrl: "/otb/atlas/OTB-splat.ksplat",
+  meshLabel: "OTB-mesh.glb (~3MB)",
+  splatLabel: "OTB-splat.ksplat (~17MB)",
+}
+
 export const OTB_LIBRARY_ASSETS: OtbReferenceAsset[] = [
   ...OTB_DROPBOX_ASSETS,
   ...OTB_DRIVE_ASSETS,
+  ...OTB_ROOF_BRIEF_ASSETS,
+  ...OTB_SITE_REFERENCE_ASSETS,
 ]
 
 /** Floorplan, nadir, drone, and PostShot stills for the empty viewer. */

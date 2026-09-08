@@ -5,13 +5,18 @@ import { fileURLToPath } from "node:url"
 import { test } from "node:test"
 import {
   OTB_AERIAL_PREVIEW,
+  OTB_ATLAS,
   OTB_DISPLAY_NAME,
   OTB_DRIVE_ASSETS,
   OTB_DRIVE_FEATURED_ASSETS,
   OTB_DROPBOX_ASSETS,
+  OTB_FLIGHT_TRACK,
   OTB_LIBRARY_ASSETS,
   OTB_PROMPT,
   OTB_REFERENCE_ASSETS,
+  OTB_ROOF_BRIEF_ASSETS,
+  OTB_ROOF_BRIEF_FEATURED_ASSETS,
+  OTB_SITE_REFERENCE_ASSETS,
 } from "./otb"
 
 test("OTB prompt names the Lafayette strip and real photo look", () => {
@@ -39,7 +44,7 @@ test("default Marble images are three Dropbox-slot stills", () => {
   assert.ok(OTB_REFERENCE_ASSETS.every((asset) => asset.kind === "dropbox"))
 })
 
-test("library keeps Dropbox stills plus live Drive and PostShot media", () => {
+test("library keeps Dropbox stills plus Drive, roof-brief, and site plats", () => {
   assert.deepEqual(
     OTB_DROPBOX_ASSETS.map((asset) => asset.name),
     [
@@ -61,10 +66,29 @@ test("library keeps Dropbox stills plus live Drive and PostShot media", () => {
       "postshot-source-S1002525.jpg",
     ],
   )
+  assert.deepEqual(
+    OTB_ROOF_BRIEF_FEATURED_ASSETS.map((asset) => asset.name),
+    [
+      "01-membrane-failure-close.jpg",
+      "04-thermal-anomaly.jpg",
+      "06-nadir-101-end-good-condition.jpg",
+    ],
+  )
   assert.ok(OTB_DRIVE_ASSETS.every((asset) => asset.kind === "drive"))
-  assert.equal(OTB_LIBRARY_ASSETS.length, OTB_DROPBOX_ASSETS.length + OTB_DRIVE_ASSETS.length)
+  assert.ok(OTB_ROOF_BRIEF_ASSETS.every((asset) => asset.kind === "roof-brief"))
+  assert.ok(OTB_SITE_REFERENCE_ASSETS.every((asset) => asset.kind === "reference"))
+  assert.equal(
+    OTB_LIBRARY_ASSETS.length,
+    OTB_DROPBOX_ASSETS.length +
+      OTB_DRIVE_ASSETS.length +
+      OTB_ROOF_BRIEF_ASSETS.length +
+      OTB_SITE_REFERENCE_ASSETS.length,
+  )
   assert.ok(!OTB_LIBRARY_ASSETS.some((asset) => asset.url.endsWith(".mp4")))
+  assert.ok(!OTB_LIBRARY_ASSETS.some((asset) => asset.url.endsWith(".glb")))
+  assert.ok(!OTB_LIBRARY_ASSETS.some((asset) => asset.url.endsWith(".ksplat")))
   assert.ok(OTB_AERIAL_PREVIEW.url.endsWith(".mp4"))
+  assert.ok(OTB_FLIGHT_TRACK.url.endsWith(".svg"))
 })
 
 test("seeded public files exist", () => {
@@ -73,6 +97,13 @@ test("seeded public files exist", () => {
     const relative = asset.url.replace(/^\//, "")
     assert.equal(existsSync(join(publicDir, relative)), true, asset.url)
   }
-  const aerial = OTB_AERIAL_PREVIEW.url.replace(/^\//, "")
-  assert.equal(existsSync(join(publicDir, aerial)), true)
+  const extras = [
+    OTB_AERIAL_PREVIEW.url,
+    OTB_FLIGHT_TRACK.url,
+    OTB_ATLAS.meshUrl,
+    OTB_ATLAS.splatUrl,
+  ]
+  for (const url of extras) {
+    assert.equal(existsSync(join(publicDir, url.replace(/^\//, ""))), true, url)
+  }
 })

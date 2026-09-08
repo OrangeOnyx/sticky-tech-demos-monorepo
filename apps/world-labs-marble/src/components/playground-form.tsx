@@ -15,10 +15,13 @@ import { loadOtbAsset, loadOtbReferenceImages, type SeededImage } from "@/lib/ot
 import type { ImageUpload } from "@/lib/types"
 import {
   OTB_AERIAL_PREVIEW,
+  OTB_ATLAS,
   OTB_DISPLAY_NAME,
   OTB_DRIVE_ASSETS,
   OTB_DROPBOX_ASSETS,
   OTB_PROMPT,
+  OTB_ROOF_BRIEF_ASSETS,
+  OTB_SITE_REFERENCE_ASSETS,
   type OtbReferenceAsset,
 } from "@shared/otb"
 import { ImagePlusIcon, XIcon } from "lucide-react"
@@ -129,8 +132,8 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
         <CardTitle>Generate</CardTitle>
         <CardDescription>
           Prefills On The Boulevard from real Nov 2020 Dropbox stills.
-          Drive floorplan, nadir, drone, and PostShot stills are in the library
-          — click to swap a generate slot (Marble max 3).
+          Roof-brief, site plats, and Drive / PostShot stills are in the
+          library — click to swap a generate slot (Marble max 3).
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -234,6 +237,24 @@ export function PlaygroundForm({ busy, onGenerate }: Props) {
                 disabled={busy}
                 onSelect={selectLibraryAsset}
               />
+              <LibraryPicker
+                title="Roof brief"
+                assets={OTB_ROOF_BRIEF_ASSETS}
+                selectedNames={images.map((image) => image.name)}
+                disabled={busy}
+                onSelect={selectLibraryAsset}
+              />
+              <LibraryPicker
+                title="Site reference"
+                assets={OTB_SITE_REFERENCE_ASSETS}
+                selectedNames={images.map((image) => image.name)}
+                disabled={busy}
+                onSelect={selectLibraryAsset}
+              />
+              <p className="pt-2 text-[11px] text-muted-foreground">
+                Atlas 3D lives in the viewer: {OTB_ATLAS.splatLabel} and{" "}
+                {OTB_ATLAS.meshLabel}. Not Marble generate inputs.
+              </p>
               <div className="space-y-1.5 pt-2">
                 <p className="text-xs font-medium text-muted-foreground">
                   Aerial preview (not a generate input)

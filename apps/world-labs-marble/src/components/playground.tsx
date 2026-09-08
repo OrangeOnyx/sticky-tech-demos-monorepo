@@ -118,8 +118,8 @@ export function Playground({ config }: Props) {
           <p className="max-w-xl text-sm text-muted-foreground">
             Marble World API playground for the strip at 101–149 Arnould Blvd,
             Lafayette LA. Generate defaults are three Nov 2020 Dropbox stills.
-            The library also shows live Drive floorplan / nadir / drone /
-            PostShot media (not Atlas stand-ins).
+            The library also shows otb-command roof-brief / plats and live
+            Drive / PostShot media.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -138,8 +138,8 @@ export function Playground({ config }: Props) {
             still works without a key. Add <code className="text-foreground">WLT_API_KEY</code>{" "}
             for live Marble. Generate defaults are Dropbox stills{" "}
             <code className="text-foreground">53 / 70 / 80</code>. The library
-            also includes live Drive + PostShot bytes (floorplan, nadir, drone,
-            PostShot stills — not Atlas stand-ins).
+            also includes live Drive + PostShot bytes and otb-command roof-brief
+            / site plats. Atlas mesh and splat are optional 3D references.
           </AlertDescription>
         </Alert>
       ) : (

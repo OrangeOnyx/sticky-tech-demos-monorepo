@@ -4,9 +4,11 @@ import { SparkRenderer, SplatMesh, SparkControls } from "@sparkjsdev/spark"
 
 type Props = {
   url: string
+  /** Marble SPZ assets need an X flip; local .ksplat files usually do not. */
+  flipX?: boolean
 }
 
-export function SparkViewer({ url }: Props) {
+export function SparkViewer({ url, flipX = true }: Props) {
   const hostRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState("Loading Gaussian splat…")
 
@@ -43,7 +45,7 @@ export function SparkViewer({ url }: Props) {
         setStatus("")
       },
     })
-    splat.quaternion.set(1, 0, 0, 0)
+    if (flipX) splat.quaternion.set(1, 0, 0, 0)
     scene.add(splat)
 
     controls = new SparkControls({ canvas: renderer.domElement })
@@ -79,7 +81,7 @@ export function SparkViewer({ url }: Props) {
         host.removeChild(renderer.domElement)
       }
     }
-  }, [url])
+  }, [url, flipX])
 
   return (
     <div className="relative min-h-80">
