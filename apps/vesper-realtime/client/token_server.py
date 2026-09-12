@@ -81,6 +81,10 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path in {"/", "/index.html"}:
             self._send(200, INDEX_HTML.read_bytes(), "text/html; charset=utf-8")
             return
+        if parsed.path == "/favicon.ico":
+            self.send_response(204)
+            self.end_headers()
+            return
         if parsed.path == "/health":
             self._send(200, b'{"ok":true}\n', "application/json")
             return
