@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vesper realtime</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0c0b0a;
+        --ink: #f4efe6;
+        --muted: #9a9286;
+        --line: #2a2622;
+        --card: #161412;
+        --accent: #c4a574;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; }
+      main { max-width: 880px; margin: 0 auto; padding: 28px 20px 48px; }
+      h1 { font-size: 1.6rem; font-weight: 560; letter-spacing: -0.02em; margin: 0 0 8px; }
+      .lede { color: var(--muted); margin: 0 0 20px; max-width: 42em; }
+      .stack { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin: 0 0 24px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+      .card strong { display: block; color: var(--accent); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+      .card span { color: var(--muted); font-size: 0.92rem; }
+      .stage { position: relative; background: #000; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; }
+      video { width: 100%; height: 100%; object-fit: cover; background: #111; }
+      .empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); padding: 24px; text-align: center; }
+      .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 8px; }
+      button { appearance: none; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 10px 16px; font: inherit; cursor: pointer; }
+      button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+      button:disabled { opacity: 0.45; cursor: not-allowed; }
+      #status { color: var(--muted); font-size: 0.9rem; min-height: 1.4em; }
+      ol { color: var(--muted); padding-left: 1.2em; }
+      a { color: var(--accent); }
+      @media (max-width: 720px) {
+        .stack { grid-template-columns: 1fr; }
+        .stage { aspect-ratio: 3 / 4; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Vesper</h1>
+      <p class="lede">
+        Grok Voice Agent API is the brain (Adam’s xAI key — keeps the unhinged persona).
+        Anam is face and lip-sync only. LiveKit is transport. Other LLM stacks will filter.
+      </p>
+      <div class="stack">
+        <div class="card"><strong>Brain</strong><span>xAI Grok realtime voice</span></div>
+        <div class="card"><strong>Face</strong><span>Anam Cara-3 lip-sync</span></div>
+        <div class="card"><strong>Glue</strong><span>LiveKit room · one agent</span></div>
+      </div>
+      <div class="stage">
+        <video id="avatar" autoplay playsinline></video>
+        <div class="empty" id="empty">Connect to see the Anam face. Start <code>python agent.py dev</code> first — one worker only.</div>
+      </div>
+      <div class="row">
+        <button class="primary" id="connect" type="button">Connect</button>
+        <button id="mic" type="button" disabled>Mic on</button>
+        <button id="disconnect" type="button" disabled>Leave</button>
+      </div>
+      <p id="status">Idle. Run the token server from this folder’s parent: <code>python client/token_server.py</code></p>
+      <ol>
+        <li>Fill <code>.env</code> with <code>XAI_API_KEY</code>, Anam, and LiveKit keys.</li>
+        <li>Paste private instructions into gitignored <code>persona/vesper_instructions.txt</code>.</li>
+        <li><code>python agent.py dev</code> — exactly one process. A second worker is a second Vesper.</li>
+        <li>This page, or <a href="https://agents-playground.livekit.io/">LiveKit Agents Playground</a> (agent name <code>vesper</code>) on phone/desktop.</li>
+      </ol>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.js"></script>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const video = $("avatar");
+      const empty = $("empty");
+      const status = $("status");
+      let room = null;
+      let micOn = true;
+
+      function setStatus(text) {
+        status.textContent = text;
+      }
+
+      function attachVideo(track) {
+        track.attach(video);
+        empty.hidden = true;
+      }
+
+      async function connect() {
+        $("connect").disabled = true;
+        setStatus("Minting token…");
+        const res = await fetch("/token?identity=vesper-browser");
+        const data = await res.json();
+        if (!res.ok) {
+          $("connect").disabled = false;
+          setStatus(data.error || "Token mint failed. Check LIVEKIT_* in .env.");
+          return;
+        }
+        room = new LivekitClient.Room({ adaptiveStream: true, dynacast: true });
+        room.on(LivekitClient.RoomEvent.TrackSubscribed, (track) => {
+          if (track.kind === LivekitClient.Track.Kind.Video) attachVideo(track);
+          if (track.kind === LivekitClient.Track.Kind.Audio) {
+            const el = track.attach();
+            el.autoplay = true;
+            document.body.appendChild(el);
+          }
+        });
+        room.on(LivekitClient.RoomEvent.Disconnected, () => {
+          setStatus("Disconnected.");
+          empty.hidden = false;
+          $("connect").disabled = false;
+          $("disconnect").disabled = true;
+          $("mic").disabled = true;
+        });
+        await room.connect(data.url, data.token);
+        await room.localParticipant.setMicrophoneEnabled(true);
+        $("disconnect").disabled = false;
+        $("mic").disabled = false;
+        $("mic").textContent = "Mic on";
+        setStatus("In room " + data.room + " · agent " + data.agentName + " · Grok is the brain, Anam is the face.");
+      }
+
+      async function leave() {
+        if (room) await room.disconnect();
+        room = null;
+        video.srcObject = null;
+      }
+
+      async function toggleMic() {
+        if (!room) return;
+        micOn = !micOn;
+        await room.localParticipant.setMicrophoneEnabled(micOn);
+        $("mic").textContent = micOn ? "Mic on" : "Mic off";
+      }
+
+      $("connect").addEventListener("click", () => connect().catch((err) => {
+        $("connect").disabled = false;
+        setStatus(String(err));
+      }));
+      $("disconnect").addEventListener("click", () => leave());
+      $("mic").addEventListener("click", () => toggleMic());
+    </script>
+  </body>
+</html>
