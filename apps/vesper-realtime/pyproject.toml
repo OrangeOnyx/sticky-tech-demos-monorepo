@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vesper-realtime"
+version = "0.1.0"
+description = "Grok Voice Agent API brain + Anam face on LiveKit"
+readme = "README.md"
+requires-python = ">=3.10,<3.15"
+dependencies = [
+    "livekit-agents[xai,anam]>=1.5,<2",
+    "livekit-api>=1.0",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.9",
+]
+
+[project.scripts]
+vesper-check = "vesper.check:main"
+
+[tool.setuptools.packages.find]
+include = ["vesper*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]

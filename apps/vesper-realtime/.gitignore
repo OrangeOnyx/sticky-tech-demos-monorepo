@@ -1,0 +1,21 @@
+# Secrets and private persona — never commit
+.env
+.env.*
+!.env.example
+persona/vesper_instructions.txt
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
