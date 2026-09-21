@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "wiki/index.md",
+    "wiki/log.md",
+    "wiki/sources/karpathy-llm-wiki.md",
+    "wiki/sources/second-brain-os.md",
+    "wiki/concepts/llm-wiki.md",
+    "wiki/concepts/compounding-wiki.md",
+    "wiki/concepts/raw-vs-wiki.md",
+    "wiki/entities/andrej-karpathy.md",
+    "wiki/entities/obsidian.md",
+    "wiki/synthesis/retrieval-vs-maintenance.md"
+  ]
+}
