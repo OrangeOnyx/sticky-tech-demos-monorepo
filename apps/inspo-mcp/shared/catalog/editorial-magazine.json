@@ -1,0 +1,134 @@
+{
+  "pick": {
+    "macrostructure": {
+      "slug": "portfolio-grid",
+      "label": "Portfolio Grid"
+    },
+    "rationale": "Picked Portfolio Grid - most common macrostructure (3 of the top hits) among the hybrid-search results for the brief. The shortlist carries the runners-up with their exemplar counts; take one of those instead if it fits the brief better."
+  },
+  "palette": [
+    "#f4ed1a",
+    "#a10c37",
+    "#f7a34b",
+    "#5682a4",
+    "#d39e9d"
+  ],
+  "evidence": {
+    "sites": 24,
+    "paperBand": "light",
+    "paperShare": 0.67,
+    "displayClass": "grotesk-sans",
+    "displayShare": 0.75,
+    "accentHue": "warm",
+    "accentShare": 0.38,
+    "note": "Measured over 24 sites. The category's strongest pull is display class = grotesk-sans at 75%. This is the gravity to take a position on, with it or against it - not a template to match."
+  },
+  "exemplars": [
+    {
+      "slug": "eyemagazine-com",
+      "title": "Eyemagazine",
+      "sourceUrl": "https://eyemagazine.com",
+      "thumb": "/fixtures/thumbs/eyemagazine-com.webp",
+      "northstar": "Cool, precise geometry - muted teal and warm ochre - crisp sans-serif, open and airy.",
+      "palette": [
+        "#f4ed1a",
+        "#a10c37",
+        "#f7a34b",
+        "#5682a4",
+        "#d39e9d"
+      ],
+      "fonts": [
+        "Georgia"
+      ],
+      "mode": "light",
+      "axes": "light / roman-serif / chromatic-other (~107)",
+      "macrostructure": {
+        "slug": "portfolio-grid",
+        "label": "Portfolio Grid"
+      }
+    },
+    {
+      "slug": "artforum-com",
+      "title": "Artforum",
+      "sourceUrl": "https://artforum.com",
+      "thumb": "/fixtures/thumbs/artforum-com.webp",
+      "northstar": "Deep ochre and charcoal, refined sans-serifs float in spacious, gallery-like clarity.",
+      "palette": [
+        "#cd7d32",
+        "#683b1b",
+        "#f8c2d5",
+        "#7d8a92",
+        "#bcccdc"
+      ],
+      "fonts": [
+        "franklin-gothic-urw",
+        "system-ui"
+      ],
+      "mode": "light",
+      "axes": "mid / grotesk-sans / warm",
+      "macrostructure": {
+        "slug": "portfolio-grid",
+        "label": "Portfolio Grid"
+      }
+    },
+    {
+      "slug": "freitag-ch",
+      "title": "Freitag Ch",
+      "sourceUrl": "https://freitag.ch",
+      "thumb": "/fixtures/thumbs/freitag-ch.webp",
+      "northstar": "Quiet, airy studio - muted pastels and clean sans-serifs on soft, spacious white.",
+      "palette": [
+        "#46abca",
+        "#3b141c",
+        "#f4f4fc",
+        "#9f8865",
+        "#c2bd9c"
+      ],
+      "fonts": [
+        "AkkStdMn",
+        "AkkStdRg",
+        "ui-sans-serif"
+      ],
+      "mode": "light",
+      "axes": "mid / grotesk-sans / cool",
+      "macrostructure": {
+        "slug": "portfolio-grid",
+        "label": "Portfolio Grid"
+      }
+    }
+  ],
+  "referenceComponents": [],
+  "spacingNote": "Below the fold, two separate systems. VERTICAL: 80-160px between sections (measured median for the biggest step: 96px); under ~64px two sections read as one crammed block. Pick ONE rhythm (e.g. clamp(72px, 10vw, 140px)) and use it at every seam. HORIZONTAL: a centered max-width column with symmetric padding-inline (24px minimum on mobile) so copy never touches the edge; full-bleed is for backgrounds. Declare them separately - a container's padding SHORTHAND (.wrap{padding:0 32px}) outranks section{padding:96px 0} on the same element and silently zeroes the rhythm, so give the container padding-inline only. Verify: a mid-page section's computed block padding must not be 0px.",
+  "id": "editorial-magazine",
+  "designSlug": "eyemagazine-com",
+  "keywords": [
+    {
+      "term": "editorial",
+      "weight": 2
+    },
+    {
+      "term": "magazine",
+      "weight": 2
+    },
+    {
+      "term": "serif",
+      "weight": 2
+    },
+    {
+      "term": "eyemagazine",
+      "weight": 2
+    },
+    {
+      "term": "artforum",
+      "weight": 2
+    },
+    {
+      "term": "margins",
+      "weight": 1
+    },
+    {
+      "term": "paper",
+      "weight": 1
+    }
+  ]
+}
