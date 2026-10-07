@@ -1,0 +1,136 @@
+{
+  "pick": {
+    "macrostructure": {
+      "slug": "feature-stack",
+      "label": "Feature Stack"
+    },
+    "rationale": "Picked Feature Stack - most common macrostructure (4 of the top hits) among the hybrid-search results for the brief. The shortlist carries the runners-up with their exemplar counts; take one of those instead if it fits the brief better."
+  },
+  "palette": [
+    "#0444fb",
+    "#092667",
+    "#f49c6c",
+    "#7f7f7f",
+    "#aeacab"
+  ],
+  "evidence": {
+    "sites": 20,
+    "paperBand": "dark",
+    "paperShare": 0.9,
+    "displayClass": "grotesk-sans",
+    "displayShare": 0.8,
+    "accentHue": "cool",
+    "accentShare": 0.45,
+    "note": "Measured over 20 sites. The category's strongest pull is paper band = dark at 90%. This is the gravity to take a position on, with it or against it - not a template to match."
+  },
+  "exemplars": [
+    {
+      "slug": "dovetail-com--pricing",
+      "title": "Dovetail \u00b7 Pricing",
+      "sourceUrl": "https://dovetail.com",
+      "thumb": "/fixtures/thumbs/dovetail-com--pricing.webp",
+      "northstar": "Deep charcoal expanse, stark sans-serif geometry, cool data streams flow.",
+      "palette": [
+        "#0444fb",
+        "#092667",
+        "#f49c6c",
+        "#7f7f7f",
+        "#aeacab"
+      ],
+      "fonts": [
+        "Inter"
+      ],
+      "mode": "dark",
+      "axes": "dark / grotesk-sans / cool",
+      "macrostructure": {
+        "slug": "feature-stack",
+        "label": "Feature Stack"
+      }
+    },
+    {
+      "slug": "frame-io--pricing",
+      "title": "Frame \u00b7 Pricing",
+      "sourceUrl": "https://frame.io",
+      "thumb": "/fixtures/thumbs/frame-io--pricing.webp",
+      "northstar": "Deep, charcoal expanse - stark, geometric type floats on cool, digital stone.",
+      "palette": [
+        "#6760fb",
+        "#6e3a1b",
+        "#9a96d1",
+        "#9e785e",
+        "#d5d4de"
+      ],
+      "fonts": [
+        "FrameGothic",
+        "Times",
+        "Arial"
+      ],
+      "mode": "dark",
+      "axes": "dark / grotesk-sans / cool",
+      "macrostructure": {
+        "slug": "feature-stack",
+        "label": "Feature Stack"
+      }
+    },
+    {
+      "slug": "n8n-io--pricing",
+      "title": "N8n \u00b7 Pricing",
+      "sourceUrl": "https://n8n.io",
+      "thumb": "/fixtures/thumbs/n8n-io--pricing.webp",
+      "northstar": "Deep charcoal expanse, sharp geometric forms, stark sans-serif precision feels powerfully modern.",
+      "palette": [
+        "#de582a",
+        "#661211",
+        "#d5c2a3",
+        "#a1616f",
+        "#c5c1be"
+      ],
+      "fonts": [
+        "geomanist"
+      ],
+      "mode": "dark",
+      "axes": "dark / grotesk-sans / warm",
+      "macrostructure": {
+        "slug": "feature-stack",
+        "label": "Feature Stack"
+      }
+    }
+  ],
+  "referenceComponents": [
+    {
+      "id": "table",
+      "type": "pricing",
+      "label": "Comparison table",
+      "note": "Tabular spec sheet. Thin rules, no zebra striping, hover lift to track across rows."
+    }
+  ],
+  "spacingNote": "Below the fold, two separate systems. VERTICAL: 80-160px between sections (measured median for the biggest step: 96px); under ~64px two sections read as one crammed block. Pick ONE rhythm (e.g. clamp(72px, 10vw, 140px)) and use it at every seam. HORIZONTAL: a centered max-width column with symmetric padding-inline (24px minimum on mobile) so copy never touches the edge; full-bleed is for backgrounds. Declare them separately - a container's padding SHORTHAND (.wrap{padding:0 32px}) outranks section{padding:96px 0} on the same element and silently zeroes the rhythm, so give the container padding-inline only. Verify: a mid-page section's computed block padding must not be 0px.",
+  "id": "dark-saas-pricing",
+  "designSlug": "dovetail-com--pricing",
+  "keywords": [
+    {
+      "term": "pricing",
+      "weight": 2
+    },
+    {
+      "term": "saas",
+      "weight": 2
+    },
+    {
+      "term": "dovetail",
+      "weight": 2
+    },
+    {
+      "term": "whitespace",
+      "weight": 1
+    },
+    {
+      "term": "minimal",
+      "weight": 1
+    },
+    {
+      "term": "dark",
+      "weight": 1
+    }
+  ]
+}
