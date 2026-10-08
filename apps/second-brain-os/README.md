@@ -6,11 +6,13 @@ Inspired by [undefined-ui/second-brain-os](https://github.com/undefined-ui/secon
 
 ```bash
 cd apps/second-brain-os
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). `bunfig.toml` sets `minimumReleaseAge = 259200`.
+Open [http://localhost:5173](http://localhost:5173). Bun is **not required**. Optional Bun path: `bun install && bun run dev`.
+
+`bunfig.toml` sets `minimumReleaseAge = 259200` if you do use Bun.
 
 ## What you get
 
@@ -24,10 +26,10 @@ Keyword routes: `RAG` → source arguing against the wiki; `Obsidian` → source
 
 | Script | Purpose |
 | --- | --- |
-| `bun run dev` | Vite on port 5173 (`--host`) |
-| `bun run build` | Production client build |
-| `bun test` | Wikilink parse, graph edges, fixture ingest |
-| `bun run lint` | oxlint |
+| `npm run dev` | Vite on port 5173 (`--host`). Optional: `bun run dev` |
+| `npm run build` | Production client build |
+| `npm test` | Wikilink parse, graph edges, fixture ingest (Vitest; no Bun) |
+| `npm run lint` | oxlint |
 
 ## Credits
 
