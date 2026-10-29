@@ -1,0 +1,9 @@
+{
+  "status": "failed",
+  "error": {
+    "error": "Rig humanoid mesh failed",
+    "node_name": "Rig Humanoid Mesh",
+    "node_type": "rig",
+    "node_id": "node_12345678"
+  }
+}
