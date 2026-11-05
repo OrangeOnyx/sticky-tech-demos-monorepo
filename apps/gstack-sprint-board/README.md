@@ -4,13 +4,13 @@ Single-user board that walks Garry Tan’s [gstack](https://github.com/garrytan/
 
 ```bash
 cd apps/gstack-sprint-board
-bun install
-bun run dev
+npm install
+npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173). Click **Advance** to move **Notifications v1** through the pipeline, or **Autoplay once**. Click a column (or a command in the timeline) to read that stage’s markdown.
 
-`bunfig.toml` sets `minimumReleaseAge = 259200` so installs wait three days after a package is published.
+Bun is **not required**. Optional Bun path: `bun install && bun run dev`. `bunfig.toml` sets `minimumReleaseAge = 259200` so Bun installs wait three days after a package is published.
 
 ## Demo stages
 
@@ -32,10 +32,10 @@ Transcripts live in `public/fixtures/notifications-v1/`.
 
 | Script | Purpose |
 | --- | --- |
-| `bun run dev` | Vite on port 5173 (`--host`) |
-| `bun run build` | Production client build |
-| `bun test` | Pipeline cursor + fixture file checks |
-| `bun run lint` | oxlint |
+| `npm run dev` | Vite on port 5173 (`--host`). Optional: `bun run dev` |
+| `npm run build` | Production client build |
+| `npm test` | Pipeline cursor + fixture file checks (Vitest; no Bun) |
+| `npm run lint` | oxlint |
 
 ## Credit
 
@@ -43,4 +43,4 @@ Skill names, specialist roles, and the Think → Plan → Review → Test → Sh
 
 ## Stack
 
-Vite + React + TypeScript, shadcn/ui (radix-nova), Tailwind v4, Bun.
+Vite + React + TypeScript, shadcn/ui (radix-nova), Tailwind v4, npm (Bun optional).

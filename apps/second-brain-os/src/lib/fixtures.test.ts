@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "vitest"
 import { ingestRaw, matchFixture, SAMPLE_SOURCES } from "./fixtures"
 import { buildGraph, pageFromMarkdown } from "./vault"
 import type { WikiPage } from "./types"
