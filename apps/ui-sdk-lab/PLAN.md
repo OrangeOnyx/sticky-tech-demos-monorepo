@@ -22,7 +22,7 @@ This is a web form plus the UI SDK bridge. It does not browse desktop accessibil
   - **Tour stops** — drag-to-reorder list built with `createReorder` from `@ui-sdk/core`, plus a keyboard move (the behavior's own key alternative). An `agent` key exposes `moveStop` so the script can reorder without a pointer.
 - `createAgent()` is imported in `src/agent.ts` before `createRoot`, and assigned to `window.agent`, matching the guide. The panel is the scripted stand-in for the console. WebMCP / ChatGPT registration is out of scope.
 - Fixtures in `src/fixtures/units.ts`: five invented units (name, id, building, beds). No real addresses, no tenant PII, no live listings.
-- README (npm-first, Node 24, UI SDK credit, Cypress Command palette, what this demo is not). oxlint. `node --test` for the script plan (labels, order, reset state) so the happy path does not depend on a browser.
+- README (npm-first, Node 24, UI SDK credit, Cypress Command palette, what this demo is not). oxlint. Vitest in jsdom for the agent bridge (the UI SDK skill's required agent test) plus the reorder primitive and the script plan.
 - A one-line note in the header: sample data, UI SDK beta `0.1.0-beta.13`.
 
 ## Explicitly out
@@ -51,14 +51,14 @@ This is a web form plus the UI SDK bridge. It does not browse desktop accessibil
 2. **Scaffold.** `npm create vite@latest . -- --template react-ts` inside `apps/ui-sdk-lab/`. Add `bunfig.toml` before any install. Pin `@ui-sdk/react@0.1.0-beta.13` and `@ui-sdk/core@0.1.0-beta.13`. Read `node_modules/@ui-sdk/react/docs/llms.txt` and the Combobox, Select, Date Picker, and `createReorder` pages in the installed docs before writing components. Confirm each `act` action name from those docs (`setValue` on Select, Combobox, Input, Date Picker; `moveStop` on the reorder primitive).
 3. **Form, empty and usable by hand.** Unit typeahead, showing-type select, date popup, guest input, reorderable stops. Keyboard: type to filter units, arrows in the lists, Escape closes popups, and stops move without a pointer. Visible labels. Focus ring in Ink.
 4. **Agent panel.** Snapshot refreshes after each human change and each script step. Play runs the script with a short pause. Step runs the next act. Reset restores the empty form and step 0. If a step's `ok` is false, the panel shows `result.error` and Play stops.
-5. **README + checks.** `npm test`, `npm run lint`, `npm run build`. One PR that only touches `apps/ui-sdk-lab/`, with one screenshot (form filled, snapshot visible) and one short video (Play or Step through the script, then Reset).
+5. **README + checks.** `npm test` (Vitest), `npm run lint`, `npm run build`. One PR that only touches `apps/ui-sdk-lab/`, with one screenshot (form filled, snapshot visible) and one short video (Play or Step through the script, then Reset).
 
 ## Stack
 
 - **Vite + React 19 + TypeScript, npm:** same shape as agent-desktop-xray / rea-xray. UI SDK requires React 19.
 - **`@ui-sdk/react@0.1.0-beta.13` and `@ui-sdk/core@0.1.0-beta.13`:** unstyled behaviors and the agent bridge. Pinned so a later beta cannot change `act` under us. Beta.13 is also old enough for `minimumReleaseAge`.
 - **Plain CSS:** Cypress Command tokens — Paper `#F3EFE6`, surface `#FAF8F3`, Ink `#141A17`, secondary `#434A45`, muted `#5E6660`, Olive `#1F5138`, Terra `#A83323`. No orange brand color.
-- **`node --test` + oxlint:** the script plan is pure data. The bridge itself is checked in the browser.
+- **Vitest + jsdom + oxlint:** the UI SDK skill asks for an agent test in jsdom. Keyboard reorder is tested with `@ui-sdk/core/testing`. The browser still checks popups.
 
 ## Script (invented)
 
