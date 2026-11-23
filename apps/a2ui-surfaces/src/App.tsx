@@ -10,13 +10,15 @@ import { TransportBar } from "@/components/transport-bar.tsx"
 import { scenarios } from "@/fixtures/scenarios.ts"
 import { useReplay } from "@/player/use-replay.ts"
 import type { A2uiMessage } from "../shared/protocol.ts"
+import { streamForTab } from "../shared/stream-selection.ts"
 
 export default function App() {
   const [scenarioId, setScenarioId] = useState(scenarios[0].id)
   const [liveMessages, setLiveMessages] = useState<A2uiMessage[] | null>(null)
   const [autoPlayToken, setAutoPlayToken] = useState(0)
-  const scenario = scenarios.find((item) => item.id === scenarioId) ?? scenarios[0]
-  const messages = scenarioId === "live" && liveMessages ? liveMessages : scenario.messages
+  const scenario = scenarios.find((item) => item.id === scenarioId)
+  const messages = streamForTab(scenarioId, scenario?.messages, liveMessages)
+  const liveWaiting = scenarioId === "live" && !liveMessages
   const replay = useReplay(messages, autoPlayToken)
 
   return (
@@ -70,12 +72,14 @@ export default function App() {
           <Card>
             <CardHeader>
               <CardTitle>
-                {scenarioId === "live" ? "Live stub" : scenario.title}
+                {scenarioId === "live" ? "Live stub" : scenario?.title}
               </CardTitle>
               <CardDescription>
-                {scenarioId === "live"
-                  ? "A canned stream. No model is contacted."
-                  : scenario.detail}
+                {liveWaiting
+                  ? "No stream yet. Send a prompt below when the stub is enabled."
+                  : scenarioId === "live"
+                    ? "A canned stream. No model is contacted."
+                    : scenario?.detail}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
@@ -97,6 +101,11 @@ export default function App() {
                 cursor={replay.cursor}
                 error={replay.error}
                 actions={replay.actions}
+                emptyHint={
+                  liveWaiting
+                    ? "No live stream yet. Recorded scenarios stay on their own tabs."
+                    : undefined
+                }
               />
             </CardContent>
           </Card>

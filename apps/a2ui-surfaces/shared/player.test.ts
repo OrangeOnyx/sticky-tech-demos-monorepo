@@ -5,6 +5,7 @@ import { basicCatalog } from "@a2ui/web_core/v0_9/basic_catalog"
 import { propertyCatalogApis } from "./catalog-api.ts"
 import { buildLiveStub, liveAgentEnabled, sanitizePrompt } from "./live.ts"
 import { intervalMs, stepBack, stepForward } from "./playback.ts"
+import { EMPTY_STREAM, streamForTab } from "./stream-selection.ts"
 import {
   PROPERTY_CATALOG_ID,
   fixtureProblems,
@@ -74,6 +75,19 @@ describe("playback", () => {
     assert.equal(intervalMs(1), 800)
     assert.equal(intervalMs(2), 400)
     assert.ok(intervalMs(4) < intervalMs(0.5))
+  })
+})
+
+describe("live tab", () => {
+  it("stays empty until a stub exists and does not reuse the fixture array", () => {
+    const first = streamForTab("live", workOrderMessages, null)
+    const second = streamForTab("live", workOrderMessages, null)
+    assert.equal(first, EMPTY_STREAM)
+    assert.equal(second, first)
+    assert.notEqual(first, workOrderMessages)
+    const stub = buildLiveStub("west closet")
+    assert.equal(streamForTab("live", workOrderMessages, stub), stub)
+    assert.equal(streamForTab("work-order", workOrderMessages, null), workOrderMessages)
   })
 })
 

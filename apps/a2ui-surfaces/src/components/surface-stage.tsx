@@ -9,6 +9,7 @@ type SurfaceStageProps = {
   cursor: number
   error: string | null
   actions: readonly ActionPayload[]
+  emptyHint?: string
 }
 
 type BoundaryState = { message: string | null }
@@ -28,14 +29,14 @@ class StageBoundary extends Component<{ children: ReactNode }, BoundaryState> {
   }
 }
 
-export function SurfaceStage({ surfaces, cursor, error, actions }: SurfaceStageProps) {
+export function SurfaceStage({ surfaces, cursor, error, actions, emptyHint }: SurfaceStageProps) {
   const latest = actions[actions.length - 1]
   return (
     <div className="a2ui-stage a2ui-light flex min-h-[28rem] flex-col gap-4 rounded-xl bg-[#f4f7f5] p-4" data-testid="stage">
       <StageBoundary key={cursor}>
         {surfaces.length === 0 ? (
           <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-            No surface yet. Play or step the recorded stream.
+            {emptyHint ?? "No surface yet. Play or step the recorded stream."}
           </div>
         ) : (
           <MarkdownContext.Provider value={renderMarkdown}>
