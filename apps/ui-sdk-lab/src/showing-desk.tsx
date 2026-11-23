@@ -1,13 +1,13 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { AgentPanel } from "./components/agent-panel"
 import { ShowingForm } from "./components/showing-form"
 import { createActGate, type WriteDetails } from "./script/act-gate"
 import { emptyShowing } from "./script/showing-script"
 
 function ShowingDesk() {
-  const gate = useRef(createActGate())
+  const [gate] = useState(createActGate)
   const [unit, setUnit] = useState(emptyShowing.unit)
   const [showingType, setShowingType] = useState(emptyShowing.showingType)
   const [date, setDate] = useState(emptyShowing.date)
@@ -16,7 +16,7 @@ function ShowingDesk() {
 
   function commit<T>(apply: (value: T) => void) {
     return (value: T, details?: WriteDetails) => {
-      if (!gate.current.accepts(details)) return
+      if (!gate.accepts(details)) return
       apply(value)
     }
   }
@@ -55,7 +55,7 @@ function ShowingDesk() {
           onGuestChange={commit((value) => setGuest(value))}
           onStopsChange={commit(setStops)}
         />
-        <AgentPanel gate={gate.current} onReset={reset} />
+        <AgentPanel gate={gate} onReset={reset} />
       </div>
     </div>
   )
