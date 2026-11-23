@@ -1,0 +1,13 @@
+{
+  "status": "complete",
+  "data": {
+    "result": {
+      "outputs": {
+        "character": {
+          "file_id": "file_nested_9",
+          "format": "glb"
+        }
+      }
+    }
+  }
+}
