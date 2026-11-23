@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { Button } from "@ui-sdk/react/button"
 import type { AgentComponent } from "@ui-sdk/react/agent"
 import { agent } from "../agent"
+import type { ActGate } from "../script/act-gate"
 import { showingScript } from "../script/showing-script"
 
 const pauseMs = 700
@@ -14,9 +15,10 @@ function visibleSnapshot(): AgentComponent[] {
   return agent.snapshot().filter((entry) => !entry.offPage && entry.component !== "more")
 }
 
-function AgentPanel({ onReset }: { onReset: () => void }) {
+function AgentPanel({ gate, onReset }: { gate: ActGate; onReset: () => void }) {
   const [cursor, setCursor] = useState(0)
   const [running, setRunning] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<ActResult | null>(null)
   const [snapshot, setSnapshot] = useState<AgentComponent[]>([])
@@ -40,22 +42,32 @@ function AgentPanel({ onReset }: { onReset: () => void }) {
 
   async function runAt(index: number): Promise<boolean> {
     const step = showingScript[index]
-    if (!step) return false
-    const next = await agent.act({
-      steps: [{ ref: step.ref, action: step.action, args: step.args }],
-    })
-    setResult(next)
-    setSnapshot(visibleSnapshot())
-    if (!next.ok) {
-      setError(next.error?.message ?? "The step failed.")
-      return false
+    if (!step || gate.pending) return false
+    const token = playToken.current
+    gate.start()
+    setBusy(true)
+    try {
+      const next = await agent.act({
+        steps: [{ ref: step.ref, action: step.action, args: step.args }],
+      })
+      if (playToken.current !== token) return false
+      setResult(next)
+      setSnapshot(visibleSnapshot())
+      if (!next.ok) {
+        setError(next.error?.message ?? "The step failed.")
+        return false
+      }
+      setError(null)
+      setCursor(index + 1)
+      return true
+    } finally {
+      gate.finish()
+      if (!gate.pending) setBusy(false)
     }
-    setError(null)
-    setCursor(index + 1)
-    return true
   }
 
   async function play() {
+    if (gate.pending) return
     const token = playToken.current + 1
     playToken.current = token
     setRunning(true)
@@ -73,6 +85,8 @@ function AgentPanel({ onReset }: { onReset: () => void }) {
 
   function reset() {
     playToken.current += 1
+    const pending = gate.noteReset()
+    setBusy(pending)
     setRunning(false)
     setCursor(0)
     setError(null)
@@ -94,13 +108,10 @@ function AgentPanel({ onReset }: { onReset: () => void }) {
         </p>
       </div>
       <div className="transport" data-agent-hidden>
-        <Button onClick={() => void play()} disabled={running || done}>
+        <Button onClick={() => void play()} disabled={running || busy || done}>
           Play
         </Button>
-        <Button
-          onClick={() => void runAt(cursor)}
-          disabled={running || done}
-        >
+        <Button onClick={() => void runAt(cursor)} disabled={running || busy || done}>
           Step
         </Button>
         <Button onClick={reset}>Reset</Button>

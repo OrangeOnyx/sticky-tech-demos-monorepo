@@ -1,16 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { AgentPanel } from "./components/agent-panel"
 import { ShowingForm } from "./components/showing-form"
+import { createActGate, type WriteDetails } from "./script/act-gate"
 import { emptyShowing } from "./script/showing-script"
 
 function ShowingDesk() {
+  const gate = useRef(createActGate())
   const [unit, setUnit] = useState(emptyShowing.unit)
   const [showingType, setShowingType] = useState(emptyShowing.showingType)
   const [date, setDate] = useState(emptyShowing.date)
   const [guest, setGuest] = useState(emptyShowing.guest)
   const [stops, setStops] = useState(emptyShowing.stops)
+
+  function commit<T>(apply: (value: T) => void) {
+    return (value: T, details?: WriteDetails) => {
+      if (!gate.current.accepts(details)) return
+      apply(value)
+    }
+  }
 
   function reset() {
     setUnit(emptyShowing.unit)
@@ -40,13 +49,13 @@ function ShowingDesk() {
           date={date}
           guest={guest}
           stops={stops}
-          onUnitChange={setUnit}
-          onShowingTypeChange={setShowingType}
-          onDateChange={setDate}
-          onGuestChange={setGuest}
-          onStopsChange={setStops}
+          onUnitChange={commit(setUnit)}
+          onShowingTypeChange={commit(setShowingType)}
+          onDateChange={commit(setDate)}
+          onGuestChange={commit((value) => setGuest(value))}
+          onStopsChange={commit(setStops)}
         />
-        <AgentPanel onReset={reset} />
+        <AgentPanel gate={gate.current} onReset={reset} />
       </div>
     </div>
   )

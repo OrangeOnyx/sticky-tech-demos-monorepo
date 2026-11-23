@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { act, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { expect, test } from "vitest"
 import { agent } from "./agent"
@@ -24,6 +24,34 @@ test("clicking a filtered unit selects it", async () => {
   await user.click(screen.getByRole("option", { name: /Kiln 12/ }))
   const unit = agent.snapshot().find((entry) => entry.label === "Unit" && !entry.offPage)
   expect(unit?.value, JSON.stringify(unit)).toBe("kiln-12")
+})
+
+test("reset during an in-flight step does not refill the form", async () => {
+  const user = userEvent.setup()
+  const original = agent.act.bind(agent)
+  let release: () => Promise<void> = async () => {}
+  agent.act = ((input: Parameters<typeof agent.act>[0]) =>
+    new Promise((resolve, reject) => {
+      release = () => original(input).then(resolve, reject)
+    })) as typeof agent.act
+
+  try {
+    render(<ShowingDesk />)
+    await user.click(screen.getByRole("button", { name: "Step" }))
+    await user.click(screen.getByRole("button", { name: "Reset" }))
+    await act(async () => {
+      await release()
+    })
+    expect(document.querySelector(".status")?.textContent).toContain("Next: Assign Kiln 12")
+    expect((screen.getByRole("combobox", { name: "Unit" }) as HTMLInputElement).value).toBe("")
+    expect((screen.getByRole("textbox", { name: "Guest" }) as HTMLInputElement).value).toBe("")
+    expect(document.querySelector(".receipt")?.textContent).toContain("The showing is empty")
+    expect(screen.getByRole("heading", { name: "Last act" }).nextElementSibling?.textContent).toBe(
+      "No step yet.",
+    )
+  } finally {
+    agent.act = original
+  }
 })
 
 test("an agent can find the form and fill a showing", async () => {

@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@ui-sdk/react/select"
 import { labelFor, showingTypes, stopLabels, units, type Unit } from "../fixtures/showing"
+import type { WriteDetails } from "../script/act-gate"
 import { TourStopsView } from "./tour-stops-view"
 
 type ShowingFormProps = {
@@ -43,11 +44,11 @@ type ShowingFormProps = {
   date: string | null
   guest: string
   stops: string[]
-  onUnitChange: (value: string | null) => void
-  onShowingTypeChange: (value: string | null) => void
-  onDateChange: (value: string | null) => void
-  onGuestChange: (value: string) => void
-  onStopsChange: (value: string[]) => void
+  onUnitChange: (value: string | null, details?: WriteDetails) => void
+  onShowingTypeChange: (value: string | null, details?: WriteDetails) => void
+  onDateChange: (value: string | null, details?: WriteDetails) => void
+  onGuestChange: (value: string, details?: WriteDetails) => void
+  onStopsChange: (value: string[], details?: WriteDetails) => void
 }
 
 function Caret() {
@@ -151,8 +152,8 @@ function ShowingForm({
         <FieldLabel>Showing date</FieldLabel>
         <DatePicker
           value={date}
-          onValueChange={(value) => {
-            onDateChange(typeof value === "string" ? value : null)
+          onValueChange={(value, details) => {
+            onDateChange(typeof value === "string" ? value : null, details)
           }}
           required
         >
