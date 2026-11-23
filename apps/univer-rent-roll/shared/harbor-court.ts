@@ -26,7 +26,8 @@ export type UnitRecord = {
   unit: string
   tenant: string
   sqFt: number
-  status: UnitStatus
+  /** Sheet text as typed. Only the three fixture labels count in the status totals. */
+  status: string
   monthlyRent: number
   leaseEnd: string
 }
@@ -226,15 +227,11 @@ export function unitsFromGrid(values: unknown[][]): UnitRecord[] {
   for (const row of values) {
     const unit = cellText(row[0]).trim()
     if (!unit) continue
-    const statusText = cellText(row[3]).trim()
-    const status: UnitStatus = UNIT_STATUSES.includes(statusText as UnitStatus)
-      ? (statusText as UnitStatus)
-      : "Vacant"
     units.push({
       unit,
       tenant: cellText(row[1]).trim(),
       sqFt: finiteNumber(row[2]) ?? 0,
-      status,
+      status: cellText(row[3]).trim(),
       monthlyRent: finiteNumber(row[4]) ?? 0,
       leaseEnd: cellText(row[5]).trim(),
     })

@@ -75,6 +75,24 @@ describe("grid export", () => {
     assert.equal(summarize(units).monthlyRent, 4550)
   })
 
+  it("keeps a status that is not Occupied, Vacant, or Notice", () => {
+    const units = unitsFromGrid([
+      ["101", "Mara Ellison", 820, "occupied", 1850, "2027-03-31"],
+      ["102", "North Pier Books", 640, "Holdover", 1620, "2026-11-30"],
+    ])
+    assert.deepEqual(
+      units.map((unit) => unit.status),
+      ["occupied", "Holdover"],
+    )
+    const summary = summarize(units)
+    assert.equal(summary.units, 2)
+    assert.equal(summary.occupied, 0)
+    assert.equal(summary.notice, 0)
+    assert.equal(summary.vacant, 0)
+    assert.match(unitsToCsv(units), /occupied/)
+    assert.match(unitsToCsv(units), /Holdover/)
+  })
+
   it("escapes commas and quotes in CSV", () => {
     assert.equal(csvField('North Pier, "Books"'), '"North Pier, ""Books"""')
     const csv = unitsToCsv([
